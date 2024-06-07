@@ -1,0 +1,16 @@
+#include <stdio.h>
+
+int substitutionMethod(int n) {
+    if (n == 0) {
+        return 1;
+    } else {
+        return 2 * substitutionMethod(n - 1) + 3;
+    }
+}
+
+int main() {
+    int n = 3;
+    int result = substitutionMethod(n);
+    printf("Result using Substitution Method: %d\n", result);
+    return 0;
+}

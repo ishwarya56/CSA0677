@@ -1,0 +1,31 @@
+#include <stdio.h>
+
+void findIntersection(int nums1[], int m, int nums2[], int n) {
+    int i, j, k = 0;
+    int intersection[1000]; // Assuming a maximum size for the intersection array
+
+    for (i = 0; i < m; i++) {
+        for (j = 0; j < n; j++) {
+            if (nums1[i] == nums2[j]) {
+                intersection[k++] = nums1[i];
+                break;
+            }
+        }
+    }
+
+    printf("Intersection of the two arrays is: ");
+    for (i = 0; i < k; i++) {
+        printf("%d ", intersection[i]);
+    }
+}
+
+int main() {
+    int nums1[] = {4, 9, 5};
+    int nums2[] = {9, 4, 9, 8, 4};
+    int m = sizeof(nums1) / sizeof(nums1[0]);
+    int n = sizeof(nums2) / sizeof(nums2[0]);
+
+    findIntersection(nums1, m, nums2, n);
+
+    return 0;
+}

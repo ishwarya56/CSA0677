@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <string.h>
+
+char* removeUntilEmpty(char* s) {
+    int count[26] = {0}; // Array to store the count of occurrences of each character
+    int len = strlen(s);
+    
+    // Count occurrences of each character in the string
+    for (int i = 0; i < len; i++) {
+        count[s[i] - 'a']++;
+    }
+
+    // Loop until the string becomes empty
+    while (1) {
+        int removed = 0; // Flag to check if any character is removed in this iteration
+        
+        // Iterate through the alphabet characters in alphabetical order
+        for (char c = 'a'; c <= 'z'; c++) {
+            // If there's at least one occurrence of the current character in the string
+            if (count[c - 'a'] > 0) {
+                // Remove the first occurrence of the character from the string
+                for (int i = 0; i < len; i++) {
+                    if (s[i] == c) {
+                        // Shift the characters to the left to overwrite the removed character
+                        for (int j = i; j < len - 1; j++) {
+                            s[j] = s[j + 1];
+                        }
+                        s[len - 1] = '\0'; // Update the null terminator
+                        count[c - 'a']--; // Decrement the count of the removed character
+                        len--; // Update the length of the string
+                        removed = 1; // Set the flag to indicate removal
+                        break; // Break after removing the character
+                    }
+                }
+            }
+        }
+        
+        // If no character is removed in this iteration, break the loop
+        if (!removed) {
+            break;
+        }
+    }
+    
+    return s;
+}
+
+int main() {
+    char s[] = "aabcbbca";
+    char* result = removeUntilEmpty(s);
+
+    printf("Resulting string: %s\n", result);
+
+    return 0;
+}

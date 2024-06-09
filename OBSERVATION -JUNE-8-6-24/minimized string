@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char* replaceQuestionMarks(char* s) {
+    int counts[26] = {0}; // Array to store the frequency of characters encountered
+    int n = strlen(s);
+    
+    for (int i = 0; i < n; ++i) {
+        if (s[i] != '?') {
+            counts[s[i] - 'a']++; // Increment the count for the encountered character
+        } else {
+            // Replace '?' with the lexicographically smallest character that hasn't appeared before it
+            for (char c = 'a'; c <= 'z'; ++c) {
+                if (counts[c - 'a'] == 0) {
+                    s[i] = c;
+                    counts[c - 'a']++; // Increment the count for the assigned character
+                    break;
+                }
+            }
+        }
+    }
+    
+    return s;
+}
+
+int main() {
+    char s[] = "a?c?e";
+    printf("Original string: %s\n", s);
+    
+    char* result = replaceQuestionMarks(s);
+    printf("Modified string: %s\n", result);
+
+    return 0;
+}

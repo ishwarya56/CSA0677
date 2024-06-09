@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <limits.h>
+
+// Function to find the maximum subarray sum using Kadane's algorithm
+int kadane(int* nums, int n) {
+    int max_sum = nums[0];
+    int current_sum = nums[0];
+
+    for (int i = 1; i < n; i++) {
+        current_sum = (nums[i] > current_sum + nums[i]) ? nums[i] : current_sum + nums[i];
+        max_sum = (max_sum > current_sum) ? max_sum : current_sum;
+    }
+
+    return max_sum;
+}
+
+// Function to find the maximum sum of a circular subarray
+int maxSubarraySumCircular(int* nums, int numsSize) {
+    if (numsSize == 1) {
+        return nums[0];
+    }
+
+    int max_kadane = kadane(nums, numsSize);
+
+    int total_sum = 0;
+    for (int i = 0; i < numsSize; i++) {
+        total_sum += nums[i];
+        nums[i] = -nums[i];
+    }
+
+    int max_wrap = total_sum + kadane(nums, numsSize);
+
+    if (max_wrap == 0) {
+        return max_kadane;
+    }
+
+    return (max_kadane > max_wrap) ? max_kadane : max_wrap;
+}
+
+int main() {
+    int nums[] = {5, -3, 5};
+    int numsSize = sizeof(nums) / sizeof(nums[0]);
+
+    int result = maxSubarraySumCircular(nums, numsSize);
+
+    printf("Maximum possible sum of a non-empty subarray in the circular array: %d\n", result);
+
+    return 0;
+}

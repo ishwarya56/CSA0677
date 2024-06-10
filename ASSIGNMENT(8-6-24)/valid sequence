@@ -1,0 +1,66 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+// Helper function to create a new TreeNode
+struct TreeNode* newNode(int val) {
+    struct TreeNode* node = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    node->val = val;
+    node->left = node->right = NULL;
+    return node;
+}
+
+// Function to check if a given string is a valid sequence from root to leaves path in the binary tree
+int isValidSequenceHelper(struct TreeNode* root, int* arr, int arrSize, int index) {
+    // If the current node is NULL or the index is out of bounds
+    if (root == NULL || index >= arrSize || root->val != arr[index]) {
+        return 0;
+    }
+
+    // If we have reached a leaf node, check if this is the end of the array
+    if (root->left == NULL && root->right == NULL && index == arrSize - 1) {
+        return 1;
+    }
+
+    // Recur for left and right subtrees
+    return isValidSequenceHelper(root->left, arr, arrSize, index + 1) ||
+           isValidSequenceHelper(root->right, arr, arrSize, index + 1);
+}
+
+// Wrapper function to initiate the sequence check
+int isValidSequence(struct TreeNode* root, int* arr, int arrSize) {
+    return isValidSequenceHelper(root, arr, arrSize, 0);
+}
+
+int main() {
+    // Example binary tree
+    struct TreeNode* root = newNode(0);
+    root->left = newNode(1);
+    root->right = newNode(0);
+    root->left->left = newNode(0);
+    root->left->right = newNode(1);
+    root->left->left->right = newNode(1);
+    root->left->right->left = newNode(0);
+    root->left->right->right = newNode(0);
+    root->right->left = newNode(0);
+
+    // Example sequence
+    int arr[] = {0, 1, 0, 1};
+    int arrSize = sizeof(arr) / sizeof(arr[0]);
+
+    // Check if the sequence is valid
+    if (isValidSequence(root, arr, arrSize)) {
+        printf("The sequence is valid.\n");
+    } else {
+        printf("The sequence is not valid.\n");
+    }
+
+    // Free memory (not shown for brevity)
+    return 0;
+}

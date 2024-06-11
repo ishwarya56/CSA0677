@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Define the maximum length for city names
+#define MAX_CITY_NAME_LEN 11
+
+// Define the hash table size
+#define HASH_TABLE_SIZE 101
+
+// Node structure for the hash table
+struct HashNode {
+    char city[MAX_CITY_NAME_LEN];
+    struct HashNode* next;
+};
+
+// Hash function to calculate the index
+unsigned int hash(const char* city) {
+    unsigned int hashValue = 0;
+    while (*city) {
+        hashValue = (hashValue << 5) + *city++;
+    }
+    return hashValue % HASH_TABLE_SIZE;
+}
+
+// Function to insert a city into the hash table
+void insertCity(struct HashNode* hashTable[], const char* city) {
+    unsigned int index = hash(city);
+    struct HashNode* newNode = (struct HashNode*)malloc(sizeof(struct HashNode));
+    strcpy(newNode->city, city);
+    newNode->next = hashTable[index];
+    hashTable[index] = newNode;
+}
+
+// Function to check if a city is in the hash table
+int cityExists(struct HashNode* hashTable[], const char* city) {
+    unsigned int index = hash(city);
+    struct HashNode* currentNode = hashTable[index];
+    while (currentNode) {
+        if (strcmp(currentNode->city, city) == 0) {
+            return 1;
+        }
+        currentNode = currentNode->next;
+    }
+    return 0;
+}
+
+// Function to find the destination city
+const char* destCity(char*** paths, int pathsSize) {
+    struct HashNode* hashTable[HASH_TABLE_SIZE] = {0};
+    
+    // Insert all starting cities into the hash table
+    for (int i = 0; i < pathsSize; i++) {
+        insertCity(hashTable, paths[i][0]);
+    }
+    
+    // Find the city that is not a starting city
+    for (int i = 0; i < pathsSize; i++) {
+        if (!cityExists(hashTable, paths[i][1])) {
+            return paths[i][1];
+        }
+    }
+    
+    return NULL; // Should never reach here since there is always a destination city
+}
+
+// Example usage
+int main() {
+    char* paths1[][2] = {{"London", "New York"}, {"New York", "Lima"}, {"Lima", "Sao Paulo"}};
+    int pathsSize1 = sizeof(paths1) / sizeof(paths1[0]);
+    printf("Output: %s\n", destCity(paths1, pathsSize1));
+
+    char* paths2[][2] = {{"B", "C"}, {"D", "B"}, {"C", "A"}};
+    int pathsSize2 = sizeof(paths2) / sizeof(paths2[0]);
+    printf("Output: %s\n", destCity(paths2, pathsSize2));
+
+    char* paths3[][2] = {{"A", "Z"}};
+    int pathsSize3 = sizeof(paths3) / sizeof(paths3[0]);
+    printf("Output: %s\n", destCity(paths3, pathsSize3));
+
+    return 0;
+}

@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition for singly-linked list.
+struct ListNode {
+    int val;
+    struct ListNode *next;
+};
+
+// Function to insert a node into the sorted part of the list
+struct ListNode* sortedInsert(struct ListNode* head, struct ListNode* node) {
+    if (!head || head->val >= node->val) {
+        node->next = head;
+        return node;
+    }
+    struct ListNode* current = head;
+    while (current->next && current->next->val < node->val) {
+        current = current->next;
+    }
+    node->next = current->next;
+    current->next = node;
+    return head;
+}
+
+// Function to sort the linked list using insertion sort
+struct ListNode* insertionSortList(struct ListNode* head) {
+    struct ListNode* sorted = NULL; // Initialize sorted list as empty
+    struct ListNode* current = head; // Start from the head of the list
+    while (current) {
+        struct ListNode* next = current->next; // Save next node
+        sorted = sortedInsert(sorted, current); // Insert current node into sorted list
+        current = next; // Move to the next node
+    }
+    return sorted;
+}
+
+// Helper function to create a new node
+struct ListNode* createNode(int val) {
+    struct ListNode* newNode = (struct ListNode*)malloc(sizeof(struct ListNode));
+    newNode->val = val;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Helper function to print the linked list
+void printList(struct ListNode* head) {
+    struct ListNode* current = head;
+    while (current) {
+        printf("%d -> ", current->val);
+        current = current->next;
+    }
+    printf("NULL\n");
+}
+
+// Main function to test the insertion sort
+int main() {
+    // Create an unsorted linked list: 4 -> 2 -> 1 -> 3
+    struct ListNode* head = createNode(4);
+    head->next = createNode(2);
+    head->next->next = createNode(1);
+    head->next->next->next = createNode(3);
+
+    printf("Unsorted List: ");
+    printList(head);
+
+    // Sort the linked list
+    head = insertionSortList(head);
+
+    printf("Sorted List: ");
+    printList(head);
+
+    // Free the allocated memory (not shown here for simplicity)
+
+    return 0;
+}

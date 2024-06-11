@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Function to compare two characters (used for sorting)
+int compare(const void *a, const void *b) {
+    return ((char)a - (char)b);
+}
+
+// Function to check if s1 can break s2
+int canBreak(char* s1, char* s2, int len) {
+    for (int i = 0; i < len; i++) {
+        if (s1[i] < s2[i]) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+// Function to check if some permutation of s1 can break some permutation of s2 or vice versa
+int checkIfCanBreak(char* s1, char* s2) {
+    int len = strlen(s1);
+
+    // Sort both strings
+    qsort(s1, len, sizeof(char), compare);
+    qsort(s2, len, sizeof(char), compare);
+
+    // Check if s1 can break s2 or s2 can break s1
+    return canBreak(s1, s2, len) || canBreak(s2, s1, len);
+}
+
+int main() {
+    char s1[] = "abc";
+    char s2[] = "xya";
+
+    if (checkIfCanBreak(s1, s2)) {
+        printf("Yes, one string can break the other.\n");
+    } else {
+        printf("No, neither string can break the other.\n");
+    }
+
+    return 0;
+}

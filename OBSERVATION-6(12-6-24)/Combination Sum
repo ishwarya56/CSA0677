@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to print a combination
+void printCombination(int* combination, int size) {
+    printf("[");
+    for (int i = 0; i < size; i++) {
+        if (i > 0) printf(",");
+        printf("%d", combination[i]);
+    }
+    printf("]\n");
+}
+
+// Function to find all unique combinations
+void findCombinations(int* candidates, int candidatesSize, int target, int* combination, int combSize, int start) {
+    if (target == 0) {
+        printCombination(combination, combSize);
+        return;
+    }
+    for (int i = start; i < candidatesSize; i++) {
+        if (candidates[i] <= target) {
+            combination[combSize] = candidates[i];
+            findCombinations(candidates, candidatesSize, target - candidates[i], combination, combSize + 1, i);
+        }
+    }
+}
+
+// Main function to solve the problem
+void combinationSum(int* candidates, int candidatesSize, int target) {
+    int* combination = (int*)malloc(target * sizeof(int));
+    findCombinations(candidates, candidatesSize, target, combination, 0, 0);
+    free(combination);
+}
+
+// Example usage
+int main() {
+    int candidates1[] = {2, 3, 6, 7};
+    int target1 = 7;
+    printf("Combinations for target = %d:\n", target1);
+    combinationSum(candidates1, sizeof(candidates1) / sizeof(candidates1[0]), target1);
+
+    int candidates2[] = {2, 3, 5};
+    int target2 = 8;
+    printf("\nCombinations for target = %d:\n", target2);
+    combinationSum(candidates2, sizeof(candidates2) / sizeof(candidates2[0]), target2);
+
+    return 0;
+}

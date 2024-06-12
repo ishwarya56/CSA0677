@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Function to generate the next term in the count-and-say sequence
+char* countAndSay(int n) {
+    if (n == 1) return "1";
+
+    char* prev = countAndSay(n - 1);
+    int len = strlen(prev);
+    char* result = (char*)malloc(2 * len + 1);
+    int index = 0;
+
+    for (int i = 0; i < len; ) {
+        char currentChar = prev[i];
+        int count = 0;
+
+        while (i < len && prev[i] == currentChar) {
+            count++;
+            i++;
+        }
+
+        result[index++] = count + '0';
+        result[index++] = currentChar;
+    }
+
+    result[index] = '\0';
+    return result;
+}
+
+// Example usage
+int main() {
+    int n = 4;
+    char* result = countAndSay(n);
+    printf("Output for n = %d: %s\n", n, result);
+    free(result); // Free the allocated memory
+    return 0;
+}

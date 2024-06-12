@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+// Function to compare two integers (used for sorting)
+int compare(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
+// Function to print a permutation
+void printPermutation(int *permutation, int size) {
+    printf("[");
+    for (int i = 0; i < size; i++) {
+        if (i > 0) printf(",");
+        printf("%d", permutation[i]);
+    }
+    printf("]\n");
+}
+
+// Helper function to swap two integers
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Function to check if swapping the elements will lead to a duplicate permutation
+bool shouldSwap(int *nums, int start, int current) {
+    for (int i = start; i < current; i++) {
+        if (nums[i] == nums[current]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Recursive function to generate permutations
+void generatePermutations(int *nums, int start, int end) {
+    if (start == end) {
+        printPermutation(nums, end);
+        return;
+    }
+
+    for (int i = start; i < end; i++) {
+        // Check if swapping nums[start] and nums[i] will lead to a duplicate permutation
+        if (shouldSwap(nums, start, i)) {
+            swap(&nums[start], &nums[i]);
+            generatePermutations(nums, start + 1, end);
+            swap(&nums[start], &nums[i]); // backtrack
+        }
+    }
+}
+
+// Main function to solve the problem
+void permuteUnique(int *nums, int numsSize) {
+    // Sort the array to handle duplicates
+    qsort(nums, numsSize, sizeof(int), compare);
+    generatePermutations(nums, 0, numsSize);
+}
+
+// Example usage
+int main() {
+    int nums1[] = {1, 1, 2};
+    int numsSize1 = sizeof(nums1) / sizeof(nums1[0]);
+    printf("Permutations for [1, 1, 2]:\n");
+    permuteUnique(nums1, numsSize1);
+
+    int nums2[] = {1, 2, 3};
+    int numsSize2 = sizeof(nums2) / sizeof(nums2[0]);
+    printf("\nPermutations for [1, 2, 3]:\n");
+    permuteUnique(nums2, numsSize2);
+
+    return 0;
+}

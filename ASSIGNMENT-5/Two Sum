@@ -1,0 +1,69 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure to store value and its index
+typedef struct {
+    int value;
+    int index;
+} HashItem;
+
+// Hash function to map values to the hash table
+int hash(int value, int size) {
+    return abs(value) % size;
+}
+
+// Function to find the two indices
+int* twoSum(int* nums, int numsSize, int target, int* returnSize) {
+    int hashSize = numsSize * 2; // Size of the hash table
+    HashItem* hashTable = (HashItem*)calloc(hashSize, sizeof(HashItem));
+
+    for (int i = 0; i < numsSize; i++) {
+        int complement = target - nums[i];
+        int hashIndex = hash(complement, hashSize);
+
+        // Check if the complement is already in the hash table
+        if (hashTable[hashIndex].value == complement) {
+            int* result = (int*)malloc(2 * sizeof(int));
+            result[0] = hashTable[hashIndex].index;
+            result[1] = i;
+            *returnSize = 2;
+            free(hashTable);
+            return result;
+        }
+
+        // Insert the current number and its index into the hash table
+        hashIndex = hash(nums[i], hashSize);
+        hashTable[hashIndex].value = nums[i];
+        hashTable[hashIndex].index = i;
+    }
+
+    *returnSize = 0;
+    free(hashTable);
+    return NULL;
+}
+
+// Example usage
+int main() {
+    int nums1[] = {2, 7, 11, 15};
+    int target1 = 9;
+    int returnSize1;
+    int* result1 = twoSum(nums1, 4, target1, &returnSize1);
+    printf("Output: [%d, %d]\n", result1[0], result1[1]);
+    free(result1);
+
+    int nums2[] = {3, 2, 4};
+    int target2 = 6;
+    int returnSize2;
+    int* result2 = twoSum(nums2, 3, target2, &returnSize2);
+    printf("Output: [%d, %d]\n", result2[0], result2[1]);
+    free(result2);
+
+    int nums3[] = {3, 3};
+    int target3 = 6;
+    int returnSize3;
+    int* result3 = twoSum(nums3, 2, target3, &returnSize3);
+    printf("Output: [%d, %d]\n", result3[0], result3[1]);
+    free(result3);
+
+    return 0;
+}

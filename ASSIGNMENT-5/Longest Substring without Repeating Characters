@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <string.h>
+
+int lengthOfLongestSubstring(char *s) {
+    int n = strlen(s);
+    int maxLength = 0;
+    int start = 0;
+    int charIndex[256]; // Assuming ASCII characters
+
+    for (int i = 0; i < 256; i++) {
+        charIndex[i] = -1;
+    }
+
+    for (int end = 0; end < n; end++) {
+        if (charIndex[s[end]] != -1) {
+            start = (start > charIndex[s[end]] + 1) ? start : charIndex[s[end]] + 1;
+        }
+        charIndex[s[end]] = end;
+        maxLength = (maxLength > end - start + 1) ? maxLength : end - start + 1;
+    }
+
+    return maxLength;
+}
+
+// Example usage
+int main() {
+    char s1[] = "abcabcbb";
+    printf("Output: %d\n", lengthOfLongestSubstring(s1)); // Output: 3
+
+    char s2[] = "bbbbb";
+    printf("Output: %d\n", lengthOfLongestSubstring(s2)); // Output: 1
+
+    char s3[] = "pwwkew";
+    printf("Output: %d\n", lengthOfLongestSubstring(s3)); // Output: 3
+
+    return 0;
+}

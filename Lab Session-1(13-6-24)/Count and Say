@@ -1,0 +1,39 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char *countAndSay(int n) {
+    if (n == 1) {
+        return "1";
+    }
+    
+    char *prev = countAndSay(n - 1);
+    int len = strlen(prev);
+    char *result = (char *)malloc(2 * len + 1);
+    
+    int count = 1;
+    char say[2];
+    int pos = 0;
+    
+    for (int i = 0; i < len; i++) {
+        if (prev[i] == prev[i + 1]) {
+            count++;
+        } else {
+            sprintf(say, "%d", count);
+            result[pos++] = say[0];
+            result[pos++] = prev[i];
+            count = 1;
+        }
+    }
+    
+    result[pos] = '\0';
+    return result;
+}
+
+int main() {
+    int n = 5; // Change n to generate different sequences
+    char *sequence = countAndSay(n);
+    printf("The count-and-say sequence for n=%d is: %s\n", n, sequence);
+    free(sequence); // Don't forget to free the allocated memory
+    return 0;
+}

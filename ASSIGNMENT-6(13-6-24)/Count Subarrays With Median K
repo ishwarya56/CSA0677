@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int countSubarraysWithMedianK(int* nums, int numsSize, int k) {
+    int count = 0;
+
+    for (int start = 0; start < numsSize; start++) {
+        for (int end = start; end < numsSize; end++) {
+            // Create a subarray from start to end
+            int subarraySize = end - start + 1;
+            int* subarray = (int*)malloc(subarraySize * sizeof(int));
+            for (int i = start; i <= end; i++) {
+                subarray[i - start] = nums[i];
+            }
+
+            // Sort the subarray
+            for (int i = 0; i < subarraySize - 1; i++) {
+                for (int j = i + 1; j < subarraySize; j++) {
+                    if (subarray[i] > subarray[j]) {
+                        int temp = subarray[i];
+                        subarray[i] = subarray[j];
+                        subarray[j] = temp;
+                    }
+                }
+            }
+
+            // Find the median
+            int median;
+            if (subarraySize % 2 == 1) {
+                median = subarray[subarraySize / 2];
+            } else {
+                median = subarray[subarraySize / 2 - 1];
+            }
+
+            // Check if the median is equal to k
+            if (median == k) {
+                count++;
+            }
+
+            free(subarray);
+        }
+    }
+
+    return count;
+}
+
+int main() {
+    int nums[] = {3, 2, 1, 4, 5};
+    int numsSize = sizeof(nums) / sizeof(nums[0]);
+    int k = 4;
+
+    int result = countSubarraysWithMedianK(nums, numsSize, k);
+    printf("Output: %d\n", result);
+
+    return 0;
+}

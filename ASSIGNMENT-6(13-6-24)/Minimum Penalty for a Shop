@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <string.h>
+
+int minPenaltyCloseHour(char* customers) {
+    int n = strlen(customers);
+    int openNoCustomerPenalty = 0;  // Penalty for hours open with no customers
+    int closeWithCustomerPenalty = 0;  // Penalty for hours closed with customers
+    int minPenalty = n;  // Initialize with a large value
+    int minHour = 0;  // Earliest hour to close for minimum penalty
+    
+    // Calculate initial penalty if shop closes at hour 0
+    for (int i = 0; i < n; i++) {
+        if (customers[i] == 'Y') {
+            closeWithCustomerPenalty++;
+        }
+    }
+    minPenalty = closeWithCustomerPenalty;
+
+    // Iterate through each possible closing hour
+    for (int j = 1; j <= n; j++) {
+        if (customers[j - 1] == 'N') {
+            openNoCustomerPenalty++;
+        } else {
+            closeWithCustomerPenalty--;
+        }
+
+        int currentPenalty = openNoCustomerPenalty + closeWithCustomerPenalty;
+        if (currentPenalty < minPenalty) {
+            minPenalty = currentPenalty;
+            minHour = j;
+        }
+    }
+
+    return minHour;
+}
+
+int main() {
+    char customers[100005];
+    scanf("%s", customers);
+
+    int result = minPenaltyCloseHour(customers);
+    printf("%d\n", result);
+
+    return 0;
+}

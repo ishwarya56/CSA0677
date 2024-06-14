@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition for singly-linked list.
+struct ListNode {
+    int val;
+    struct ListNode *next;
+};
+
+struct ListNode* removeNodes(struct ListNode* head) {
+    if (head == NULL) {
+        return NULL;
+    }
+
+    struct ListNode* dummy = (struct ListNode*)malloc(sizeof(struct ListNode));
+    dummy->next = head;
+    struct ListNode* current = dummy;
+    int maxVal = head->val;
+
+    while (current->next != NULL) {
+        if (current->next->val > maxVal) {
+            struct ListNode* temp = current->next;
+            current->next = current->next->next;
+            free(temp);
+        } else {
+            current = current->next;
+            maxVal = current->val;
+        }
+    }
+
+    head = dummy->next;
+    free(dummy);
+    return head;
+}
+
+// Function to create a new node with the given value
+struct ListNode* createNode(int val) {
+    struct ListNode* newNode = (struct ListNode*)malloc(sizeof(struct ListNode));
+    newNode->val = val;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Function to free the memory occupied by the linked list
+void freeLinkedList(struct ListNode* head) {
+    struct ListNode* temp;
+    while (head != NULL) {
+        temp = head;
+        head

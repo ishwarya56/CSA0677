@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MOD 1000000007
+
+int countPalindromicSubsequences(char* s) {
+    int len = strlen(s);
+    long long count = 0;
+
+    // Iterate through all possible subsequences of length 5
+    for (int i = 0; i < len - 4; i++) {
+        for (int j = i + 1; j < len - 3; j++) {
+            for (int k = j + 1; k < len - 2; k++) {
+                for (int l = k + 1; l < len - 1; l++) {
+                    for (int m = l + 1; m < len; m++) {
+                        // Check if the subsequence is a palindrome
+                        if (s[i] == s[m] && s[j] == s[l] && s[i] != s[j]) {
+                            count = (count + 1) % MOD;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return (int)count;
+}
+
+int main() {
+    char s[10005];
+    scanf("%s", s);
+
+    int result = countPalindromicSubsequences(s);
+    printf("%d\n", result);
+
+    return 0;
+}

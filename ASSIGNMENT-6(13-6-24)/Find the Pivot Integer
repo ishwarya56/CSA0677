@@ -1,0 +1,29 @@
+#include <stdio.h>
+
+int findPivot(int n) {
+    int prefixSum = 0, suffixSum = 0;
+
+    // Calculate the total sum
+    int totalSum = n * (n + 1) / 2;
+
+    for (int x = 1; x <= n; x++) {
+        suffixSum = totalSum - prefixSum - x;
+        if (prefixSum == suffixSum) {
+            return x;
+        }
+        prefixSum += x;
+    }
+
+    return -1; // No pivot integer exists
+}
+
+int main() {
+    int n;
+    printf("Enter the value of n: ");
+    scanf("%d", &n);
+
+    int result = findPivot(n);
+    printf("The pivot integer is: %d\n", result);
+
+    return 0;
+}

@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Comparator function for qsort
+int compare(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
+// Function to find the minimum total distance traveled by robots to factories
+long long minTotalDistance(int* robot, int robotSize, int** factory, int factorySize) {
+    // Sort robots and factories by their positions
+    qsort(robot, robotSize, sizeof(int), compare);
+    qsort(factory, factorySize, sizeof(int*), compare);
+
+    // Array to track the number of robots assigned to each factory
+    int* assignedRobots = (int*)calloc(factorySize, sizeof(int));
+    
+    long long totalDistance = 0;
+    int r = 0;
+
+    for (int f = 0; f < factorySize && r < robotSize; f++) {
+        int factoryPos = factory[f][0];
+        int limit = factory[f][1];
+
+        while (limit > 0 && r < robotSize) {
+            totalDistance += abs(factoryPos - robot[r]);
+            limit--;
+            r++;
+        }
+    }
+
+    free(assignedRobots);
+    return totalDistance;
+}
+
+// Example usage
+int main() {
+    int robot[] = {1, 3, 5};
+    int robotSize = sizeof(robot) / sizeof(robot[0]);
+    
+    int factoryData[][2] = {{2, 2}, {6, 1}};
+    int factorySize = sizeof(factoryData) / sizeof(factoryData[0]);
+    
+    int* factory[factorySize];
+    for (int i = 0; i < factorySize; i++) {
+        factory[i] = factoryData[i];
+    }
+
+    long long result = minTotalDistance(robot, robotSize, factory, factorySize);
+
+    printf("Minimum total distance traveled by robots: %lld\n", result);
+
+    return 0;
+}

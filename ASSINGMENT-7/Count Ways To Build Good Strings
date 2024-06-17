@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_CITIES 1000
+
+// Structure to represent a road between two cities
+typedef struct {
+    int city1;
+    int city2;
+} Road;
+
+// Function to calculate the total fuel cost for representatives to travel to the capital city
+int calculateTotalFuelCost(int n, Road roads[], int seats) {
+    if (n <= 0 || seats <= 0 || roads == NULL) {
+        fprintf(stderr, "Invalid input parameters\n");
+        exit(EXIT_FAILURE);
+    }
+
+    int totalFuelCost = 0;
+
+    // Calculate fuel cost for each road
+    for (int i = 0; i < n - 1; i++) {
+        totalFuelCost += 1; // Assuming 1 liter of fuel per road
+    }
+
+    return totalFuelCost;
+}
+
+int main() {
+    int n = 5; // Number of cities
+    Road roads[MAX_CITIES] = {{0, 1}, {1, 2}, {2, 3}, {3, 4}}; // Roads between cities
+    int seats = 4; // Number of seats in each car
+
+    int totalFuelCost = calculateTotalFuelCost(n, roads, seats);
+    printf("Total fuel cost to travel to the capital city: %d liters\n", totalFuelCost);
+
+    return 0;
+}

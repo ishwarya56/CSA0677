@@ -1,0 +1,96 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <float.h>
+
+// Structure to represent a point in 2D space
+struct Point {
+    int x, y;
+};
+
+// Function to calculate the Euclidean distance between two points
+float calculateDistance(struct Point p1, struct Point p2) {
+    return sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+}
+
+// Function to compare points based on X coordinate
+int compareX(const void* a, const void* b) {
+    return ((struct Point*)a)->x - ((struct Point*)b)->x;
+}
+
+// Function to compare points based on Y coordinate
+int compareY(const void* a, const void* b) {
+    return ((struct Point*)a)->y - ((struct Point*)b)->y;
+}
+
+// Function to find the minimum of two values
+float min(float x, float y) {
+    return (x < y) ? x : y;
+}
+
+// Function to find the distance between the closest pair of points
+float closestPairUtil(struct Point P[], int n) {
+    // Base case: If there are 2 or 3 points, calculate the distance directly
+    if (n <= 3) {
+        float minDist = FLT_MAX;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                minDist = min(minDist, calculateDistance(P[i], P[j]));
+            }
+        }
+        return minDist;
+    }
+
+    // Sort points based on X coordinate
+    qsort(P, n, sizeof(struct Point), compareX);
+
+    // Find the middle point
+    int mid = n / 2;
+    struct Point midPoint = P[mid];
+
+    // Recursively find the smallest distances in the left and right subarrays
+    float dl = closestPairUtil(P, mid);
+    float dr = closestPairUtil(P + mid, n - mid);
+
+    // Find the minimum of the two distances
+    float d = min(dl, dr);
+
+    // Build an array strip[] that contains points close to the line passing through the middle point
+    struct Point strip[n];
+    int j = 0;
+    for (int i = 0; i < n; i++) {
+        if (abs(P[i].x - midPoint.x) < d) {
+            strip[j] = P[i];
+            j++;
+        }
+    }
+
+    // Find the closest points in the strip and update the minimum distance if needed
+    float minStrip = d;
+    for (int i = 0; i < j; i++) {
+        for (int k = i + 1; k < j && (strip[k].y - strip[i].y) < minStrip; k++) {
+            minStrip = min(minStrip, calculateDistance(strip[i], strip[k]));
+        }
+    }
+
+    return min(d, minStrip);
+}
+
+// Function to find the closest pair of points
+float closestPair(struct Point P[], int n) {
+    // Sort points based on Y coordinate
+    qsort(P, n, sizeof(struct Point), compareY);
+
+    // Call the utility function to find the closest pair of points
+    return closestPairUtil(P, n);
+}
+
+int main() {
+    struct Point P[] = {{2, 3}, {12, 30}, {40, 50}, {5, 1}, {12, 10}, {3, 4}};
+    int n = sizeof(P) / sizeof(P[0]);
+
+    float minDistance = closestPair(P, n);
+    printf("The closest pair of points have a distance of: %f\n", minDistance);
+
+    return 0;
+}

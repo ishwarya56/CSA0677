@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#define MAX_NUMS 100
+
+// Comparator function for qsort to sort in ascending order
+int compare(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
+// Function to find the number of distinct averages
+int distinctAverages(int *nums, int numsSize) {
+    // Sort the array
+    qsort(nums, numsSize, sizeof(int), compare);
+
+    // Array to store the distinct averages
+    double distinctAvgs[MAX_NUMS / 2];
+    int count = 0;
+
+    // Pointers to traverse the array from both ends
+    int left = 0;
+    int right = numsSize - 1;
+
+    // Calculate averages until the array is empty
+    while (left < right) {
+        double avg = (nums[left] + nums[right]) / 2.0;
+        
+        // Check if this average is already in the distinctAvgs array
+        bool found = false;
+        for (int i = 0; i < count; ++i) {
+            if (distinctAvgs[i] == avg) {
+                found = true;
+                break;
+            }
+        }
+        
+        // If this average is not found, add it to the distinctAvgs array
+        if (!found) {
+            distinctAvgs[count++] = avg;
+        }
+        
+        // Remove the minimum and maximum elements
+        left++;
+        right--;
+    }
+    
+    // Return the count of distinct averages
+    return count;
+}
+
+int main() {
+    int nums1[] = {4, 1, 4, 0, 3, 5};
+    int size1 = sizeof(nums1) / sizeof(nums1[0]);
+    printf("Output: %d\n", distinctAverages(nums1, size1));  // Output: 2
+
+    int nums2[] = {1, 100};
+    int size2 = sizeof(nums2) / sizeof(nums2[0]);
+    printf("Output: %d\n", distinctAverages(nums2, size2));  // Output: 1
+
+    return 0;
+}

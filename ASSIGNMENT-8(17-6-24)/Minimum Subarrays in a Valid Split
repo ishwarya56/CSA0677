@@ -1,0 +1,38 @@
+#include <stdio.h>
+
+int gcd(int a, int b) {
+    if (b == 0)
+        return a;
+    return gcd(b, a % b);
+}
+
+int minSubarrays(int* nums, int numsSize) {
+    int count = 1;
+    int prevGCD = nums[0];
+
+    for (int i = 1; i < numsSize; i++) {
+        if (gcd(prevGCD, nums[i]) > 1) {
+            prevGCD = gcd(prevGCD, nums[i]);
+        } else {
+            count++;
+            prevGCD = nums[i];
+        }
+    }
+
+    return (prevGCD > 1) ? count : -1;
+}
+
+int main() {
+    int nums[] = {2, 6, 3, 4, 3};
+    int numsSize = sizeof(nums) / sizeof(nums[0]);
+
+    int result = minSubarrays(nums, numsSize);
+
+    if (result != -1) {
+        printf("Minimum number of subarrays in a valid split: %d\n", result);
+    } else {
+        printf("Valid subarray splitting is not possible.\n");
+    }
+
+    return 0;
+}

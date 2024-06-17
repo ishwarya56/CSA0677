@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_NODES 1000
+#define MAX_EDGES (MAX_NODES - 1)
+#define INF 1000000000
+
+typedef struct Node {
+    int id;
+    struct Node *next;
+} Node;
+
+typedef struct {
+    Node *head;
+} AdjList;
+
+AdjList adj[MAX_NODES];
+int amount[MAX_NODES];
+int bobPosition;
+int n;
+
+void addEdge(int a, int b) {
+    Node *newNode = (Node *)malloc(sizeof(Node));
+    newNode->id = b;
+    newNode->next = adj[a].head;
+    adj[a].head = newNode;
+
+    newNode = (Node *)malloc(sizeof(Node));
+    newNode->id = a;
+    newNode->next = adj[b].head;
+    adj[b].head = newNode;
+}
+
+int dfsAlice(int node, int parent) {
+    int maxIncome = amount[node];
+    Node *cur = adj[node].head;
+    while (cur != NULL) {
+        if (cur->id != parent) {
+            int childIncome = dfsAlice(cur->id, node);
+            if (childIncome > 0) {
+                maxIncome += childIncome;
+            }
+        }
+        cur = cur->next;
+    }
+    return maxIncome;
+}
+
+void dfsBob(int node, int parent, int *distances, int dist) {
+    distances[node] = dist;
+    Node *cur = adj[node].head;
+    while (cur != NULL) {
+        if (cur->id != parent) {
+            dfsBob(cur->id, node, distances, dist + 1);
+        }
+        cur = cur->next;
+    }
+}
+
+int main() {
+    // Example input
+    n = 7;
+    int edges[MAX_EDGES][2] = {{0, 1}, {0, 2}, {1, 3}, {1, 4}, {2, 5}, {2, 6}};
+    int amt[MAX_NODES] = {10, -5, -10, 20, -5, 30, -20};
+    bobPosition = 5;
+
+    for (int i = 0; i < MAX_NODES; i++) {
+        adj[i].head = NULL;
+        amount[i] = amt[i];
+    }
+
+    for (int i = 0; i < n - 1; i++) {
+        addEdge(edges[i][0], edges[i][1]);
+    }
+
+    int distances[MAX_NODES];
+    dfsBob(bobPosition, -1, distances, 0);
+
+    int aliceIncome = dfsAlice(0, -1);
+
+    for (int i = 0; i < n; i++) {
+        if (distances[i] != INF && distances[i] % 2 == 0) {
+            if (amount[i] > 0) {
+                aliceIncome -= amount[i] / 2;
+            } else {
+                aliceIncome += amount[i] / 2;
+            }
+        }
+    }
+
+    printf("Maximum net income Alice can have: %d\n", aliceIncome);
+
+    return 0;
+}

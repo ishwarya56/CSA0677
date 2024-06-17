@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
+
+// Function to generate all possible subset sums
+void generateSubsetSums(int arr[], int size, int *subsetSums, int *numOfSubsets) {
+    int totalSubsets = 1 << size;
+    *numOfSubsets = totalSubsets;
+
+    for (int i = 0; i < totalSubsets; i++) {
+        int sum = 0;
+        for (int j = 0; j < size; j++) {
+            if (i & (1 << j)) {
+                sum += arr[j];
+            }
+        }
+        subsetSums[i] = sum;
+    }
+}
+
+// Comparison function for qsort
+int compare(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
+// Function to find if there is a subset with a given sum
+bool meetInTheMiddle(int arr[], int n, int target) {
+    int mid = n / 2;
+
+    int *leftSubsetSums = (int *)malloc((1 << mid) * sizeof(int));
+    int *rightSubsetSums = (int *)malloc((1 << (n - mid)) * sizeof(int));
+
+    int leftNumOfSubsets, rightNumOfSubsets;
+
+    generateSubsetSums(arr, mid, leftSubsetSums, &leftNumOfSubsets);
+    generateSubsetSums(arr + mid, n - mid, rightSubsetSums, &rightNumOfSubsets);
+
+    qsort(leftSubsetSums, leftNumOfSubsets, sizeof(int), compare);
+    qsort(rightSubsetSums, rightNumOfSubsets, sizeof(int), compare);
+
+    int leftIndex = 0, rightIndex = rightNumOfSubsets - 1;
+
+    while (leftIndex < leftNumOfSubsets && rightIndex >= 0) {
+        int sum = leftSubsetSums[leftIndex] + rightSubsetSums[rightIndex];
+
+        if (sum == target) {
+            free(leftSubsetSums);
+            free(rightSubsetSums);
+            return true;
+        }
+
+        if (sum < target) {
+            leftIndex++;
+        } else {
+            rightIndex--;
+        }
+    }
+
+    free(leftSubsetSums);
+    free(rightSubsetSums);
+    return false;
+}
+
+int main() {
+    int arr[] = {1, 3, 9, 2, 7};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int target = 11;
+
+    if (meetInTheMiddle(arr, n, target)) {
+        printf("Subset with sum %d found.\n", target);
+    } else {
+        printf("No subset with sum %d found.\n", target);
+    }
+
+    return 0;
+}

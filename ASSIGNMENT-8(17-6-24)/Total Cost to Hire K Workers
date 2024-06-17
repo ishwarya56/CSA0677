@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+// Function to find the minimum cost to hire k workers
+int minCostToHireWorkers(int* costs, int n, int k, int candidates) {
+    int totalCost = 0;
+    int left = 0, right = n - 1;
+    int leftHeap[candidates], rightHeap[candidates];
+    int leftHeapSize = 0, rightHeapSize = 0;
+
+    // Function to push an element into a heap
+    void pushHeap(int* heap, int* size, int value) {
+        heap[(*size)++] = value;
+        int i = *size - 1;
+        while (i > 0 && heap[i] < heap[(i - 1) / 2]) {
+            int temp = heap[i];
+            heap[i] = heap[(i - 1) / 2];
+            heap[(i - 1) / 2] = temp;
+            i = (i - 1) / 2;
+        }
+    }
+
+    // Function to pop the minimum element from a heap
+    int popHeap(int* heap, int* size) {
+        int minVal = heap[0];
+        heap[0] = heap[--(*size)];
+        int i = 0;
+        while (i * 2 + 1 < *size) {
+            int leftChild = i * 2 + 1;
+            int rightChild = i * 2 + 2;
+            int minChild = (rightChild < *size && heap[rightChild] < heap[leftChild]) ? rightChild : leftChild;
+            if (heap[i] <= heap[minChild]) break;
+            int temp = heap[i];
+            heap[i] = heap[minChild];
+            heap[minChild] = temp;
+            i = minChild;
+        }
+        return minVal;
+    }
+
+    // Initialize heaps with first and last candidates
+    for (int i = 0; i < candidates && left <= right; i++) {
+        pushHeap(leftHeap, &leftHeapSize, costs[left++]);
+    }
+    for (int i = 0; i < candidates && left <= right; i++) {
+        pushHeap(rightHeap, &rightHeapSize, costs[right--]);
+    }
+
+    // Hire k workers
+    for (int i = 0; i < k; i++) {
+        int leftMin = leftHeapSize > 0 ? leftHeap[0] : INT_MAX;
+        int rightMin = rightHeapSize > 0 ? rightHeap[0] : INT_MAX;
+        if (leftMin <= rightMin) {
+            totalCost += popHeap(leftHeap, &leftHeapSize);
+            if (left <= right) {
+                pushHeap(leftHeap, &leftHeapSize, costs[left++]);
+            }
+        } else {
+            totalCost += popHeap(rightHeap, &rightHeapSize);
+            if (left <= right) {
+                pushHeap(rightHeap, &rightHeapSize, costs[right--]);
+            }
+        }
+    }
+
+    return totalCost;
+}
+
+// Example usage
+int main() {
+    int costs[] = {17, 12, 10, 2, 7, 2, 11, 20, 8};
+    int k = 3;
+    int candidates = 4;
+    int n = sizeof(costs) / sizeof(costs[0]);
+
+    int result = minCostToHireWorkers(costs, n, k, candidates);
+
+    printf("Total cost to hire %d workers: %d\n", k, result);
+
+    return 0;
+}

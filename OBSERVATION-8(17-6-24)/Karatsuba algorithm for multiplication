@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+
+// Function to multiply two numbers using the traditional method
+long long multiply(long long x, long long y) {
+    return x * y;
+}
+
+// Function to find the minimum of two numbers
+int min(int x, int y) {
+    return (x < y) ? x : y;
+}
+
+// Function to calculate the number of digits in a number
+int numberOfDigits(long long num) {
+    return (num == 0) ? 1 : (int)log10(num) + 1;
+}
+
+// Function to split a number into two halves
+void splitNumber(long long num, int splitPos, long long *high, long long *low) {
+    long long divisor = pow(10, splitPos);
+    *high = num / divisor;
+    *low = num % divisor;
+}
+
+// Function to multiply two numbers using Karatsuba's algorithm
+long long karatsuba(long long x, long long y) {
+    // Base case for recursion
+    if (x < 10 || y < 10) {
+        return x * y;
+    }
+
+    // Calculate the number of digits in the maximum of x and y
+    int maxDigits = min(numberOfDigits(x), numberOfDigits(y));
+    int halfDigits = maxDigits / 2;
+
+    // Split x and y into high and low parts
+    long long high1, low1, high2, low2;
+    splitNumber(x, halfDigits, &high1, &low1);
+    splitNumber(y, halfDigits, &high2, &low2);
+
+    // Perform the three recursive multiplications
+    long long z0 = karatsuba(low1, low2);
+    long long z1 = karatsuba((low1 + high1), (low2 + high2));
+    long long z2 = karatsuba(high1, high2);
+
+    // Combine the results using Karatsuba's formula
+    return (z2 * pow(10, 2 * halfDigits)) + ((z1 - z2 - z0) * pow(10, halfDigits)) + z0;
+}
+
+int main() {
+    long long x = 1234567890;
+    long long y = 9876543210;
+
+    long long result = karatsuba(x, y);
+    printf("Karatsuba multiplication of %lld and %lld is %lld\n", x, y, result);
+
+    return 0;
+}

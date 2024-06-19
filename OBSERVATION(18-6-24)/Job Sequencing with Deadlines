@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure to represent a job
+struct Job {
+    char id;     // Job Id
+    int deadline; // Deadline of job
+    int profit;   // Profit if job is completed before or on deadline
+};
+
+// Function to compare two jobs based on their profit in descending order
+int compare(const void* a, const void* b) {
+    struct Job* jobA = (struct Job*)a;
+    struct Job* jobB = (struct Job*)b;
+    return jobB->profit - jobA->profit;
+}
+
+// Function to find the maximum deadline from the given jobs
+int findMaxDeadline(struct Job jobs[], int n) {
+    int maxDeadline = 0;
+    for (int i = 0; i < n; i++) {
+        if (jobs[i].deadline > maxDeadline) {
+            maxDeadline = jobs[i].deadline;
+        }
+    }
+    return maxDeadline;
+}
+
+// Function to schedule jobs to maximize profit
+void jobSequencing(struct Job jobs[], int n) {
+    // Sort all jobs according to their profit in descending order
+    qsort(jobs, n, sizeof(struct Job), compare);
+
+    // Find the maximum deadline
+    int maxDeadline = findMaxDeadline(jobs, n);
+
+    // Array to store the result (sequence of jobs)
+    char result[maxDeadline];
+    for (int i = 0; i < maxDeadline; i++) {
+        result[i] = '\0'; // Initialize all slots as empty
+    }
+
+    // Array to keep track of free time slots
+    int slot[maxDeadline];
+    for (int i = 0; i < maxDeadline; i++) {
+        slot[i] = 0; // Initialize all slots as free
+    }
+
+    // Iterate through all given jobs
+    for (int i = 0; i < n; i++) {
+        // Find a free slot for this job (Note that we start from the last possible slot)
+        for (int j = jobs[i].deadline - 1; j >= 0; j--) {
+            if (slot[j] == 0) {
+                result[j] = jobs[i].id; // Add this job to result
+                slot[j] = 1; // Mark this slot as occupied
+                break;
+            }
+        }
+    }
+
+    // Print the result
+    printf("Job sequence to maximize profit: ");
+    for (int i = 0; i < maxDeadline; i++) {
+        if (result[i] != '\0') {
+            printf("%c ", result[i]);
+        }
+    }
+    printf("\n");
+}
+
+int main() {
+    struct Job jobs[] = { {'a', 2, 100}, {'b', 1, 19}, {'c', 2, 27}, {'d', 1, 25}, {'e', 3, 15} };
+    int n = sizeof(jobs) / sizeof(jobs[0]);
+    jobSequencing(jobs, n);
+    return 0;
+}

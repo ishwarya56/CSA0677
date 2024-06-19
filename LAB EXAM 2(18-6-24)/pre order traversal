@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+// Helper function to create a new tree node.
+struct TreeNode* createTreeNode(int val) {
+    struct TreeNode* newNode = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    newNode->val = val;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Function to convert sorted array to height-balanced BST.
+struct TreeNode* sortedArrayToBST(int* nums, int left, int right) {
+    if (left > right) {
+        return NULL;
+    }
+    int mid = left + (right - left) / 2;
+    struct TreeNode* root = createTreeNode(nums[mid]);
+    root->left = sortedArrayToBST(nums, left, mid - 1);
+    root->right = sortedArrayToBST(nums, mid + 1, right);
+    return root;
+}
+
+// Wrapper function for the user to call.
+struct TreeNode* sortedArrayToBSTWrapper(int* nums, int numsSize) {
+    return sortedArrayToBST(nums, 0, numsSize - 1);
+}
+
+// Helper function to print the tree in pre-order for verification.
+void preOrderTraversal(struct TreeNode* root) {
+    if (root != NULL) {
+        printf("%d ", root->val);
+        preOrderTraversal(root->left);
+        preOrderTraversal(root->right);
+    }
+}
+
+int main() {
+    int nums[] = {-10, -3, 0, 5, 9};
+    int numsSize = sizeof(nums) / sizeof(nums[0]);
+
+    struct TreeNode* root = sortedArrayToBSTWrapper(nums, numsSize);
+
+    printf("Pre-order traversal of the constructed BST: ");
+    preOrderTraversal(root);
+
+    return 0;
+}

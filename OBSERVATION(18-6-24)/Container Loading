@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_ITEMS 100
+#define MAX_BINS 100
+
+// Function to apply First Fit Decreasing (FFD) heuristic for bin packing
+int firstFitDecreasing(int weights[], int n, int binCapacity) {
+    int binsUsed = 0;
+    int bin[MAX_BINS] = {0}; // Array to store remaining capacity of bins
+
+    // Sort items in non-increasing order
+    for (int i = 0; i < n; i++) {
+        // Find the first bin that can accommodate weights[i]
+        int j;
+        for (j = 0; j < binsUsed; j++) {
+            if (bin[j] >= weights[i]) {
+                bin[j] -= weights[i]; // Put the item in bin j
+                break;
+            }
+        }
+        // If no suitable bin is found, create a new bin
+        if (j == binsUsed) {
+            bin[binsUsed] = binCapacity - weights[i];
+            binsUsed++;
+        }
+    }
+    return binsUsed;
+}
+
+int main() {
+    int weights[MAX_ITEMS];
+    int n, binCapacity;
+
+    // Example input
+    printf("Enter number of items: ");
+    scanf("%d", &n);
+
+    printf("Enter weights of items: ");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &weights[i]);
+    }
+
+    printf("Enter bin capacity: ");
+    scanf("%d", &binCapacity);
+
+    // Calculate minimum number of bins required
+    int minBins = firstFitDecreasing(weights, n, binCapacity);
+
+    printf("Minimum number of bins required: %d\n", minBins);
+
+    return 0;
+}

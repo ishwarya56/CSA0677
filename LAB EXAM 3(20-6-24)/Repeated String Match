@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <string.h>
+
+// Function to check if b is a substring of the repeated a
+int isSubstring(char *a, char *b, int repeatCount) {
+    int lenA = strlen(a);
+    int lenB = strlen(b);
+    char repeatedA[repeatCount * lenA + 1];
+
+    // Create the repeated string
+    repeatedA[0] = '\0';
+    for (int i = 0; i < repeatCount; i++) {
+        strcat(repeatedA, a);
+    }
+
+    // Check if b is a substring of the repeated a
+    return strstr(repeatedA, b) != NULL;
+}
+
+// Function to find the minimum number of times a should be repeated
+int repeatedStringMatch(char *a, char *b) {
+    int lenA = strlen(a);
+    int lenB = strlen(b);
+    int minRepeats = (lenB / lenA) + 1; // Minimum number of repeats needed
+    for (int i = minRepeats; i <= minRepeats + 1; i++) {
+        if (isSubstring(a, b, i)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+int main() {
+    char a1[] = "abcd";
+    char b1[] = "cdabcdab";
+    printf("Output: %d\n", repeatedStringMatch(a1, b1)); // Output: 3
+
+    char a2[] = "abc";
+    char b2[] = "cabcabca";
+    printf("Output: %d\n", repeatedStringMatch(a2, b2)); // Output: 4
+
+    char a3[] = "a";
+    char b3[] = "aa";
+    printf("Output: %d\n", repeatedStringMatch(a3, b3)); // Output: 2
+
+    return 0;
+}

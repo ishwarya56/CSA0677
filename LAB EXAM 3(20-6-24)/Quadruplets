@@ -1,0 +1,33 @@
+#include <stdio.h>
+
+void findQuadruplets(int nums[], int n, int target) {
+    for (int a = 0; a < n - 3; a++) {
+        for (int b = a + 1; b < n - 2; b++) {
+            for (int c = b + 1; c < n - 1; c++) {
+                for (int d = c + 1; d < n; d++) {
+                    if (nums[a] + nums[b] + nums[c] + nums[d] == target) {
+                        printf("[%d, %d, %d, %d]\n", nums[a], nums[b], nums[c], nums[d]);
+                    }
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    int nums1[] = {1, 0, -1, 0, -2, 2};
+    int target1 = 0;
+    int n1 = sizeof(nums1) / sizeof(nums1[0]);
+    
+    int nums2[] = {2, 2, 2, 2, 2};
+    int target2 = 8;
+    int n2 = sizeof(nums2) / sizeof(nums2[0]);
+
+    printf("Output for nums1:\n");
+    findQuadruplets(nums1, n1, target1);
+
+    printf("Output for nums2:\n");
+    findQuadruplets(nums2, n2, target2);
+
+    return 0;
+}

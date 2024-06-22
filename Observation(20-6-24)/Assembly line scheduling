@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <limits.h>
+
+// Function to find the minimum of two numbers
+int min(int a, int b) {
+    return (a < b) ? a : b;
+}
+
+// Function to find the minimum time to complete the assembly line process
+int assemblyLineScheduling(int a[][4], int t[][3], int e[2], int x[2], int numStations) {
+    int T1[numStations], T2[numStations];
+
+    // Time taken to leave first station in line 1 and line 2
+    T1[0] = e[0] + a[0][0];
+    T2[0] = e[1] + a[1][0];
+
+    // Fill tables T1[] and T2[]
+    for (int i = 1; i < numStations; i++) {
+        T1[i] = min(T1[i - 1] + a[0][i], T2[i - 1] + t[1][i - 1] + a[0][i]);
+        T2[i] = min(T2[i - 1] + a[1][i], T1[i - 1] + t[0][i - 1] + a[1][i]);
+    }
+
+    // Consider exit times and return the minimum
+    return min(T1[numStations - 1] + x[0], T2[numStations - 1] + x[1]);
+}
+
+int main() {
+    int numStations = 4;
+
+    // Processing times at each station for both lines
+    int a[2][4] = {{4, 5, 3, 2}, {2, 10, 1, 4}};
+
+    // Transfer times between the stations
+    int t[2][3] = {{0, 7, 4}, {0, 9, 2}};
+
+    // Entry times for both lines
+    int e[2] = {10, 12};
+
+    // Exit times for both lines
+    int x[2] = {18, 7};
+
+    printf("Minimum time to complete the assembly line process is: %d\n", assemblyLineScheduling(a, t, e, x, numStations));
+
+    return 0;
+}

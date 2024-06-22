@@ -1,0 +1,24 @@
+#include <stdio.h>
+
+int missingNumber(int* nums, int numsSize) {
+    int sum = 0;
+    int expectedSum = (numsSize * (numsSize + 1)) / 2; // Sum of first n numbers
+
+    // Calculate the sum of numbers in nums
+    for (int i = 0; i < numsSize; i++) {
+        sum += nums[i];
+    }
+
+    // The missing number is the difference between the expected sum and the actual sum
+    return expectedSum - sum;
+}
+
+int main() {
+    int nums[] = {3, 0, 1};
+    int numsSize = sizeof(nums) / sizeof(nums[0]);
+
+    int result = missingNumber(nums, numsSize);
+    printf("Output: %d\n", result);
+
+    return 0;
+}

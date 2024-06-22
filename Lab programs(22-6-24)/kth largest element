@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to swap two integers
+void swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Function to heapify the array
+void heapify(int* heap, int n, int i) {
+    int smallest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if (left < n && heap[left] < heap[smallest]) {
+        smallest = left;
+    }
+
+    if (right < n && heap[right] < heap[smallest]) {
+        smallest = right;
+    }
+
+    if (smallest != i) {
+        swap(&heap[i], &heap[smallest]);
+        heapify(heap, n, smallest);
+    }
+}
+
+// Function to insert a new element into the heap
+void insertHeap(int* heap, int* heapSize, int value) {
+    if (*heapSize == 0) {
+        heap[0] = value;
+        (*heapSize)++;
+        return;
+    }
+
+    heap[*heapSize] = value;
+    (*heapSize)++;
+    for (int i = (*heapSize) / 2 - 1; i >= 0; i--) {
+        heapify(heap, *heapSize, i);
+    }
+}
+
+// Function to find the kth largest element
+int findKthLargest(int* nums, int numsSize, int k) {
+    int* heap = (int*)malloc(k * sizeof(int));
+    int heapSize = 0;
+
+    for (int i = 0; i < numsSize; i++) {
+        if (heapSize < k) {
+            insertHeap(heap, &heapSize, nums[i]);
+        } else if (nums[i] > heap[0]) {
+            heap[0] = nums[i];
+            heapify(heap, k, 0);
+        }
+    }
+
+    int result = heap[0];
+    free(heap);
+    return result;
+}
+
+// Main function to test the findKthLargest function
+int main() {
+    int nums1[] = {3, 2, 1, 5, 6, 4};
+    int k1 = 2;
+    int result1 = findKthLargest(nums1, sizeof(nums1) / sizeof(nums1[0]), k1);
+    printf("The %d-th largest element is: %d\n", k1, result1);
+
+    int nums2[] = {3, 2, 3, 1, 2, 4, 5, 5, 6};
+    int k2 = 4;
+    int result2 = findKthLargest(nums2, sizeof(nums2) / sizeof(nums2[0]), k2);
+    printf("The %d-th largest element is: %d\n", k2, result2);
+
+    return 0;
+}

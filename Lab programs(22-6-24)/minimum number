@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <string.h>
+
+int repeatedStringMatch(char* a, char* b) {
+    int lenA = strlen(a);
+    int lenB = strlen(b);
+
+    // Repeat a until its length is greater than or equal to the length of b
+    int repetitions = 1;
+    char* repeatedA = strdup(a);
+
+    while (strlen(repeatedA) < lenB) {
+        strcat(repeatedA, a);
+        repetitions++;
+    }
+
+    // Check if b is a substring of the repeated a
+    if (strstr(repeatedA, b) != NULL) {
+        return repetitions;
+    }
+
+    // If not, check one more repetition of a
+    strcat(repeatedA, a);
+    repetitions++;
+
+    if (strstr(repeatedA, b) != NULL) {
+        return repetitions;
+    }
+
+    // If b is still not a substring, return -1
+    return -1;
+}
+
+int main() {
+    char a[] = "abcd";
+    char b[] = "cdabcdab";
+
+    int result = repeatedStringMatch(a, b);
+    printf("Output: %d\n", result);
+
+    return 0;
+}

@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to compare two integers for qsort
+int compare(const void* a, const void* b) {
+    return ((int)a - (int)b);
+}
+
+// Function to find unique quadruplets
+void findQuadruplets(int* nums, int numsSize, int target, int** result, int* returnSize, int* returnColumnSizes) {
+    qsort(nums, numsSize, sizeof(int), compare); // Sort the array
+    
+    for (int i = 0; i < numsSize - 3; i++) {
+        if (i > 0 && nums[i] == nums[i - 1]) continue; // Skip duplicates
+
+        for (int j = i + 1; j < numsSize - 2; j++) {
+            if (j > i + 1 && nums[j] == nums[j - 1]) continue; // Skip duplicates
+
+            int left = j + 1;
+            int right = numsSize - 1;
+            
+            while (left < right) {
+                int sum = nums[i] + nums[j] + nums[left] + nums[right];
+                if (sum == target) {
+                    result[returnSize] = (int)malloc(4 * sizeof(int));
+                    result[*returnSize][0] = nums[i];
+                    result[*returnSize][1] = nums[j];
+                    result[*returnSize][2] = nums[left];
+                    result[*returnSize][3] = nums[right];
+                    returnColumnSizes[*returnSize] = 4;
+                    (*returnSize)++;
+                    
+                    while (left < right && nums[left] == nums[left + 1]) left++; // Skip duplicates
+                    while (left < right && nums[right] == nums[right - 1]) right--; // Skip duplicates
+                    
+                    left++;
+                    right--;
+                } else if (sum < target) {
+                    left++;
+                } else {
+                    right--;
+                }
+            }
+        }
+    }
+}
+
+// Function to return the list of quadruplets
+int** fourSum(int* nums, int numsSize, int target, int* returnSize, int** returnColumnSizes) {
+    *returnSize = 0;
+    int** result = (int*)malloc(1000 * sizeof(int)); // Allocate memory for result
+    returnColumnSizes = (int)malloc(1000 * sizeof(int)); // Allocate memory for column sizes
+    
+    findQuadruplets(nums, numsSize, target, result, returnSize, *returnColumnSizes);
+    
+    return result;
+}
+
+// Function to print the list of quadruplets
+void printResult(int** result, int returnSize, int* returnColumnSizes) {
+    printf("[");
+    for (int i = 0; i < returnSize; i++) {
+        printf("[");
+        for (int j = 0; j < returnColumnSizes[i]; j++) {
+            printf("%d", result[i][j]);
+            if (j < returnColumnSizes[i] - 1) {
+                printf(",");
+            }
+        }
+        printf("]");
+        if (i < returnSize - 1) {
+            printf(",");
+        }
+    }
+    printf("]\n");
+}
+
+// Main function to test the fourSum function
+int main() {
+    int nums1[] = {1, 0, -1, 0, -2, 2};
+    int target1 = 0;
+    int returnSize1;
+    int* returnColumnSizes1;
+    int** result1 = fourSum(nums1, 6, target1, &returnSize1, &returnColumnSizes1);
+    printResult(result1, returnSize1, returnColumnSizes1);
+
+    int nums2[] = {2, 2, 2, 2, 2};
+    int target2 = 8;
+    int returnSize2;
+    int* returnColumnSizes2;
+    int** result2 = fourSum(nums2, 5, target2, &returnSize2, &returnColumnSizes2);
+    printResult(result2, returnSize2, returnColumnSizes2);
+
+    return 0;
+}

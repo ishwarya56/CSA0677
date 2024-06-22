@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+void generate_subsets(int *arr, int n, int *subsets, int *size) {
+    *size = 1 << n; // 2^n subsets
+    for (int i = 0; i < *size; ++i) {
+        subsets[i] = 0;
+        for (int j = 0; j < n; ++j) {
+            if (i & (1 << j)) {
+                subsets[i] += arr[j];
+            }
+        }
+    }
+}
+
+bool meet_in_the_middle(int *arr, int n, int target) {
+    int mid = n / 2;
+    int left_size, right_size;
+    int *left_subsets = malloc((1 << mid) * sizeof(int));
+    int *right_subsets = malloc((1 << (n - mid)) * sizeof(int));
+
+    generate_subsets(arr, mid, left_subsets, &left_size);
+    generate_subsets(arr + mid, n - mid, right_subsets, &right_size);
+
+    for (int i = 0; i < left_size; ++i) {
+        for (int j = 0; j < right_size; ++j) {
+            if (left_subsets[i] + right_subsets[j] == target) {
+                free(left_subsets);
+                free(right_subsets);
+                return true;
+            }
+        }
+    }
+
+    free(left_subsets);
+    free(right_subsets);
+    return false;
+}
+
+int main() {
+    int arr[] = {3, 34, 4, 12, 5, 2};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int target = 9;
+
+    if (meet_in_the_middle(arr, n, target)) {
+        printf("Subset with the given sum found.\n");
+    } else {
+        printf("No subset with the given sum exists.\n");
+    }
+
+    return 0;
+}

@@ -1,0 +1,40 @@
+#include <stdio.h>
+
+// Function to find the majority element
+int majorityElement(int* nums, int numsSize) {
+    int count = 0;
+    int candidate = 0;
+
+    // Phase 1: Finding a candidate
+    for (int i = 0; i < numsSize; i++) {
+        if (count == 0) {
+            candidate = nums[i];
+        }
+        count += (nums[i] == candidate) ? 1 : -1;
+    }
+
+    // Phase 2: Verifying the candidate (optional in this case as the problem states a majority element always exists)
+    count = 0;
+    for (int i = 0; i < numsSize; i++) {
+        if (nums[i] == candidate) {
+            count++;
+        }
+    }
+
+    return candidate;
+}
+
+// Main function to test the majorityElement function
+int main() {
+    int nums1[] = {3, 2, 3};
+    int size1 = sizeof(nums1) / sizeof(nums1[0]);
+    int result1 = majorityElement(nums1, size1);
+    printf("The majority element is: %d\n", result1);
+
+    int nums2[] = {2, 2, 1, 1, 1, 2, 2};
+    int size2 = sizeof(nums2) / sizeof(nums2[0]);
+    int result2 = majorityElement(nums2, size2);
+    printf("The majority element is: %d\n", result2);
+
+    return 0;
+}

@@ -1,0 +1,34 @@
+#include <stdio.h>
+#include <string.h>
+
+// Function to find the number of ways to get sum X with n throws of m-faced dice
+int findWays(int n, int m, int X) {
+    // Create a table to store results of subproblems
+    int dp[n + 1][X + 1];
+    memset(dp, 0, sizeof(dp));
+    
+    // Base case: There's one way to get a sum of 0 with 0 throws
+    dp[0][0] = 1;
+
+    // Fill the table using a bottom-up approach
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= X; j++) {
+            dp[i][j] = 0;
+            for (int k = 1; k <= m && k <= j; k++) {
+                dp[i][j] += dp[i - 1][j - k];
+            }
+        }
+    }
+
+    return dp[n][X];
+}
+
+int main() {
+    int n = 3;  // Number of dice
+    int m = 6;  // Number of faces on each die
+    int X = 8;  // Desired sum
+
+    printf("Number of ways to get sum %d with %d throws of %d-faced dice: %d\n", X, n, m, findWays(n, m, X));
+
+    return 0;
+}

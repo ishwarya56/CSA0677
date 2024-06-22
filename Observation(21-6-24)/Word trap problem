@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+// Function to check if a word is trapped between two characters
+int is_trapped_word(char *word, char start_char, char end_char) {
+    int len = strlen(word);
+    return (len > 2 && word[0] == start_char && word[len - 1] == end_char);
+}
+
+int main() {
+    char input[256];
+    char start_char, end_char;
+
+    printf("Enter the string of words: ");
+    fgets(input, sizeof(input), stdin);
+
+    printf("Enter the start character: ");
+    scanf(" %c", &start_char);
+    printf("Enter the end character: ");
+    scanf(" %c", &end_char);
+
+    char *token = strtok(input, " \n");
+    printf("Trapped words:\n");
+
+    while (token != NULL) {
+        if (is_trapped_word(token, start_char, end_char)) {
+            printf("%s\n", token);
+        }
+        token = strtok(NULL, " \n");
+    }
+
+    return 0;
+}

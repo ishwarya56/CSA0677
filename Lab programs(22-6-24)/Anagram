@@ -1,0 +1,125 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Define the maximum size for each word and the maximum number of words
+#define MAX_WORD_SIZE 100
+#define MAX_NUM_WORDS 1000
+
+// Structure to store an array of strings
+typedef struct {
+    char** data;
+    int size;
+} StringArray;
+
+// Function to create a new string array
+StringArray* createStringArray() {
+    StringArray* array = (StringArray*)malloc(sizeof(StringArray));
+    array->data = (char*)malloc(MAX_NUM_WORDS * sizeof(char));
+    array->size = 0;
+    return array;
+}
+
+// Function to add a string to the string array
+void addString(StringArray* array, const char* str) {
+    array->data[array->size] = (char*)malloc((strlen(str) + 1) * sizeof(char));
+    strcpy(array->data[array->size], str);
+    array->size++;
+}
+
+// Function to compare two strings for qsort
+int compareStrings(const void* a, const void* b) {
+    return strcmp((const char)a, *(const char*)b);
+}
+
+// Function to sort characters in a string
+void sortString(char* str) {
+    qsort(str, strlen(str), sizeof(char), compareStrings);
+}
+
+// Function to group anagrams together
+StringArray** groupAnagrams(char** strs, int strsSize, int* returnSize, int** returnColumnSizes) {
+    // Allocate memory for result
+    StringArray** result = (StringArray*)malloc(MAX_NUM_WORDS * sizeof(StringArray));
+    returnColumnSizes = (int)malloc(MAX_NUM_WORDS * sizeof(int));
+    *returnSize = 0;
+
+    // Hash map to store groups of anagrams
+    StringArray* hashMap[MAX_NUM_WORDS] = {NULL};
+    char* sortedStrings[MAX_NUM_WORDS];
+    int mapSize = 0;
+
+    for (int i = 0; i < strsSize; i++) {
+        // Create a copy of the string and sort it
+        char* sortedStr = (char*)malloc((strlen(strs[i]) + 1) * sizeof(char));
+        strcpy(sortedStr, strs[i]);
+        sortString(sortedStr);
+
+        // Check if the sorted string is already in the hash map
+        int found = 0;
+        for (int j = 0; j < mapSize; j++) {
+            if (strcmp(sortedStrings[j], sortedStr) == 0) {
+                addString(hashMap[j], strs[i]);
+                found = 1;
+                break;
+            }
+        }
+
+        // If not found, create a new group
+        if (!found) {
+            sortedStrings[mapSize] = sortedStr;
+            hashMap[mapSize] = createStringArray();
+            addString(hashMap[mapSize], strs[i]);
+            mapSize++;
+        } else {
+            free(sortedStr);
+        }
+    }
+
+    // Copy the groups to the result
+    for (int i = 0; i < mapSize; i++) {
+        result[*returnSize] = hashMap[i];
+        (*returnColumnSizes)[*returnSize] = hashMap[i]->size;
+        (*returnSize)++;
+    }
+
+    return result;
+}
+
+// Function to print the grouped anagrams
+void printGroupedAnagrams(StringArray** groups, int groupSize, int* groupLengths) {
+    printf("[");
+    for (int i = 0; i < groupSize; i++) {
+        printf("[");
+        for (int j = 0; j < groupLengths[i]; j++) {
+            printf("\"%s\"", groups[i]->data[j]);
+            if (j < groupLengths[i] - 1) {
+                printf(",");
+            }
+        }
+        printf("]");
+        if (i < groupSize - 1) {
+            printf(",");
+        }
+    }
+    printf("]\n");
+}
+
+// Main function to test the groupAnagrams function
+int main() {
+    char* strs1[] = {"eat", "tea", "tan", "ate", "nat", "bat"};
+    int strsSize1 = sizeof(strs1) / sizeof(strs1[0]);
+    int returnSize1;
+    int* returnColumnSizes1;
+    StringArray** result1 = groupAnagrams(strs1, strsSize1, &returnSize1, &returnColumnSizes1);
+    printGroupedAnagrams(result1, returnSize1, returnColumnSizes1);
+
+    char* strs2[] = {""};
+    int strsSize2 = sizeof(strs2) / sizeof(strs2[0]);
+    int returnSize2;
+    int* returnColumnSizes2;
+    StringArray** result2 = groupAnagrams(strs2, strsSize2, &returnSize2, &returnColumnSizes2);
+    printGroupedAnagrams(result2, returnSize2, returnColumnSizes2);
+
+    return 0;
+}

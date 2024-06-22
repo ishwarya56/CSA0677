@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definition for singly-linked list.
+struct ListNode {
+    int val;
+    struct ListNode* next;
+};
+
+// Function to create a new node
+struct ListNode* createNode(int val) {
+    struct ListNode* newNode = (struct ListNode*)malloc(sizeof(struct ListNode));
+    newNode->val = val;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Function to merge two sorted linked lists
+struct ListNode* merge(struct ListNode* l1, struct ListNode* l2) {
+    if (!l1) return l2;
+    if (!l2) return l1;
+    
+    if (l1->val < l2->val) {
+        l1->next = merge(l1->next, l2);
+        return l1;
+    } else {
+        l2->next = merge(l1, l2->next);
+        return l2;
+    }
+}
+
+// Function to split the linked list into two halves
+void splitList(struct ListNode* source, struct ListNode** frontRef, struct ListNode** backRef) {
+    struct ListNode* slow = source;
+    struct ListNode* fast = source->next;
+    
+    while (fast != NULL) {
+        fast = fast->next;
+        if (fast != NULL) {
+            slow = slow->next;
+            fast = fast->next;
+        }
+    }
+    
+    *frontRef = source;
+    *backRef = slow->next;
+    slow->next = NULL;
+}
+
+// Function to sort the linked list using merge sort
+struct ListNode* mergeSort(struct ListNode* head) {
+    if (!head || !head->next) {
+        return head;
+    }
+    
+    struct ListNode* front;
+    struct ListNode* back;
+    
+    splitList(head, &front, &back);
+    
+    front = mergeSort(front);
+    back = mergeSort(back);
+    
+    return merge(front, back);
+}
+
+// Function to print the linked list
+void printList(struct ListNode* head) {
+    while (head != NULL) {
+        printf("%d ", head->val);
+        head = head->next;
+    }
+    printf("\n");
+}
+
+// Main function to test the merge sort function
+int main() {
+    struct ListNode* head = createNode(4);
+    head->next = createNode(2);
+    head->next->next = createNode(1);
+    head->next->next->next = createNode(3);
+
+    printf("Original list: ");
+    printList(head);
+
+    head = mergeSort(head);
+
+    printf("Sorted list: ");
+    printList(head);
+
+    return 0;
+}

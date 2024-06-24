@@ -1,0 +1,34 @@
+#include <stdio.h>
+#include <math.h>
+
+int findNthDigit(int n) {
+    long long digitLength = 1;
+    long long count = 9;
+    long long start = 1;
+
+    // Find the range in which the nth digit falls
+    while (n > digitLength * count) {
+        n -= digitLength * count;
+        digitLength++;
+        count *= 10;
+        start *= 10;
+    }
+
+    // Find the exact number in that range
+    start += (n - 1) / digitLength;
+    char numStr[20];
+    sprintf(numStr, "%lld", start);
+
+    // Find the exact digit in the number
+    return numStr[(n - 1) % digitLength] - '0';
+}
+
+int main() {
+    int n1 = 3;
+    int n2 = 11;
+
+    printf("The %dth digit is: %d\n", n1, findNthDigit(n1)); // Output: 3
+    printf("The %dth digit is: %d\n", n2, findNthDigit(n2)); // Output: 0
+
+    return 0;
+}

@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <string.h>
+
+int isPrefix(const char* word, const char* prefix) {
+    while (*prefix) {
+        if (*word != *prefix) {
+            return 0;
+        }
+        word++;
+        prefix++;
+    }
+    return 1;
+}
+
+int findPrefixIndex(char* sentence, char* searchWord) {
+    int index = 1;
+    char* token = strtok(sentence, " ");
+    
+    while (token != NULL) {
+        if (isPrefix(token, searchWord)) {
+            return index;
+        }
+        token = strtok(NULL, " ");
+        index++;
+    }
+    
+    return -1;
+}
+
+int main() {
+    char sentence[] = "i love eating burger";
+    char searchWord[] = "burg";
+
+    int result = findPrefixIndex(sentence, searchWord);
+    printf("The index of the word with prefix '%s' is: %d\n", searchWord, result); // Output: 4
+
+    return 0;
+}

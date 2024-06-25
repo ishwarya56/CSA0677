@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Function to find the minimum number of repetitions
+int minRepeats(char *a, char *b) {
+    int aLen = strlen(a);
+    int bLen = strlen(b);
+
+    // Calculate the minimum repeats needed
+    int repeatCount = (bLen + aLen - 1) / aLen;
+
+    // Create a new string large enough to hold the repeated versions of a
+    char *repeatedA = (char *)malloc((repeatCount + 1) * aLen + 1);
+    
+    if (!repeatedA) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return -1;
+    }
+
+    repeatedA[0] = '\0';
+
+    // Repeat a sufficient number of times
+    for (int i = 0; i < repeatCount; i++) {
+        strcat(repeatedA, a);
+    }
+
+    // Check if b is a substring of the repeated string
+    if (strstr(repeatedA, b) != NULL) {
+        free(repeatedA);
+        return repeatCount;
+    }
+
+    // Add one more repeat of a and check again
+    strcat(repeatedA, a);
+    if (strstr(repeatedA, b) != NULL) {
+        free(repeatedA);
+        return repeatCount + 1;
+    }
+
+    // If not found, return -1
+    free(repeatedA);
+    return -1;
+}
+
+int main() {
+    char a[] = "abcd";
+    char b[] = "cdabcdab";
+
+    int result = minRepeats(a, b);
+    printf("The minimum number of repeats needed: %d\n", result); // Output: 3
+
+    return 0;
+}

@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to transpose a matrix
+int** transpose(int** matrix, int matrixSize, int* matrixColSize, int* returnSize, int** returnColumnSizes) {
+    int rows = matrixSize;
+    int cols = *matrixColSize;
+    int** transposedMatrix = (int*)malloc(cols * sizeof(int));
+    returnColumnSizes = (int)malloc(cols * sizeof(int));
+
+    for (int i = 0; i < cols; i++) {
+        transposedMatrix[i] = (int*)malloc(rows * sizeof(int));
+        (*returnColumnSizes)[i] = rows;
+        for (int j = 0; j < rows; j++) {
+            transposedMatrix[i][j] = matrix[j][i];
+        }
+    }
+
+    *returnSize = cols;
+    return transposedMatrix;
+}
+
+// Function to print the matrix
+void printMatrix(int** matrix, int matrixSize, int* matrixColSize) {
+    for (int i = 0; i < matrixSize; i++) {
+        for (int j = 0; j < matrixColSize[i]; j++) {
+            printf("%d ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    // Example 1
+    int matrix1[3][3] = {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    };
+    int* mat1[3] = {matrix1[0], matrix1[1], matrix1[2]};
+    int mat1ColSize = 3;
+    int mat1Size = 3;
+    int returnSize1;
+    int* returnColSizes1;
+
+    int** result1 = transpose(mat1, mat1Size, &mat1ColSize, &returnSize1, &returnColSizes1);
+    printf("Example 1 Transposed Matrix:\n");
+    printMatrix(result1, returnSize1, returnColSizes1);
+    printf("\n");
+
+    // Free allocated memory
+    for (int i = 0; i < returnSize1; i++) {
+        free(result1[i]);
+    }
+    free(result1);
+    free(returnColSizes1);
+
+    // Example 2
+    int matrix2[2][3] = {
+        {1, 2, 3},
+        {4, 5, 6}
+    };
+    int* mat2[2] = {matrix2[0], matrix2[1]};
+    int mat2ColSize = 3;
+    int mat2Size = 2;
+    int returnSize2;
+    int* returnColSizes2;
+
+    int** result2 = transpose(mat2, mat2Size, &mat2ColSize, &returnSize2, &returnColSizes2);
+    printf("Example 2 Transposed Matrix:\n");
+    printMatrix(result2, returnSize2, returnColSizes2);
+    printf("\n");
+
+    // Free allocated memory
+    for (int i = 0; i < returnSize2; i++) {
+        free(result2[i]);
+    }
+    free(result2);
+    free(returnColSizes2);
+
+    return 0;
+}

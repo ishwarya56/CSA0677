@@ -1,0 +1,40 @@
+#include <stdio.h>
+#include <string.h>
+
+int strStr(char *haystack, char *needle) {
+    int len1 = strlen(haystack);
+    int len2 = strlen(needle);
+
+    // If needle is empty, return 0
+    if (len2 == 0) return 0;
+
+    for (int i = 0; i <= len1 - len2; i++) {
+        int j;
+        // Check for match
+        for (j = 0; j < len2; j++) {
+            if (haystack[i + j] != needle[j])
+                break;
+        }
+        // If needle is found at index i
+        if (j == len2)
+            return i;
+    }
+    // Needle not found
+    return -1;
+}
+
+int main() {
+    char haystack1[] = "sadbutsad";
+    char needle1[] = "sad";
+    int index1 = strStr(haystack1, needle1);
+    printf("Input: haystack = \"%s\", needle = \"%s\"\n", haystack1, needle1);
+    printf("Output: %d\n", index1);
+
+    char haystack2[] = "leetcode";
+    char needle2[] = "leeto";
+    int index2 = strStr(haystack2, needle2);
+    printf("Input: haystack = \"%s\", needle = \"%s\"\n", haystack2, needle2);
+    printf("Output: %d\n", index2);
+
+    return 0;
+}

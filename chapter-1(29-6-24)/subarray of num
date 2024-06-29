@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to check if an element exists in an array
+int existsInArray(int num, int* arr, int size) {
+    for (int i = 0; i < size; i++) {
+        if (arr[i] == num) {
+            return 1; // Element exists
+        }
+    }
+    return 0; // Element does not exist
+}
+
+// Function to calculate the distinct count of a subarray
+int distinctCount(int* arr, int size) {
+    int count = 0;
+    int* distinctElements = (int*)malloc(size * sizeof(int));
+    int distinctSize = 0;
+    
+    for (int i = 0; i < size; i++) {
+        if (!existsInArray(arr[i], distinctElements, distinctSize)) {
+            distinctElements[distinctSize++] = arr[i];
+            count++;
+        }
+    }
+    
+    free(distinctElements);
+    return count;
+}
+
+// Function to calculate the sum of the squares of distinct counts of all subarrays
+int sumOfSquaresOfDistinctCounts(int* nums, int numsSize) {
+    int sum = 0;
+
+    for (int i = 0; i < numsSize; i++) {
+        for (int j = i; j < numsSize; j++) {
+            int subarraySize = j - i + 1;
+            int* subarray = (int*)malloc(subarraySize * sizeof(int));
+            for (int k = i; k <= j; k++) {
+                subarray[k - i] = nums[k];
+            }
+            int distinctCountValue = distinctCount(subarray, subarraySize);
+            sum += distinctCountValue * distinctCountValue;
+            free(subarray);
+        }
+    }
+
+    return sum;
+}
+
+int main() {
+    // Example 1
+    int nums1[] = {1, 2, 1};
+    int size1 = sizeof(nums1) / sizeof(nums1[0]);
+    printf("Example 1 Output: %d\n", sumOfSquaresOfDistinctCounts(nums1, size1));
+
+    // Example 2
+    int nums2[] = {1, 1};
+    int size2 = sizeof(nums2) / sizeof(nums2[0]);
+    printf("Example 2 Output: %d\n", sumOfSquaresOfDistinctCounts(nums2, size2));
+
+    return 0;
+}

@@ -1,0 +1,62 @@
+#include <stdio.h>
+
+int findPaths(int m, int n, int N, int i, int j) {
+    // Create a 3D array to store the number of ways
+    // dp[k][r][c] will store number of ways to move out of grid from position (r, c) in k steps
+    long long dp[N+1][m][n];
+    int directions[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    int mod = 1000000007;
+
+    // Initialize dp array
+    for (int k = 0; k <= N; ++k) {
+        for (int r = 0; r < m; ++r) {
+            for (int c = 0; c < n; ++c) {
+                dp[k][r][c] = 0;
+            }
+        }
+    }
+
+    // Initialize starting position
+    dp[0][i][j] = 1;
+
+    // Fill the dp array for all steps up to N
+    for (int k = 1; k <= N; ++k) {
+        for (int r = 0; r < m; ++r) {
+            for (int c = 0; c < n; ++c) {
+                for (int d = 0; d < 4; ++d) {
+                    int nr = r + directions[d][0];
+                    int nc = c + directions[d][1];
+                    if (nr >= 0 && nr < m && nc >= 0 && nc < n) {
+                        dp[k][r][c] = (dp[k][r][c] + dp[k-1][nr][nc]) % mod;
+                    }
+                }
+            }
+        }
+    }
+
+    // Sum all ways to move out of the grid boundary in exactly N steps
+    long long ways = 0;
+    for (int r = 0; r < m; ++r) {
+        for (int c = 0; c < n; ++c) {
+            if (r == 0 || r == m-1 || c == 0 || c == n-1) {
+                ways = (ways + dp[N][r][c]) % mod;
+            }
+        }
+    }
+
+    return (int)ways;
+}
+
+int main() {
+    // Test cases
+    int m1 = 2, n1 = 2, N1 = 2, i1 = 0, j1 = 0;
+    int m2 = 1, n2 = 3, N2 = 3, i2 = 0, j2 = 1;
+
+    printf("Test Case 1: m=%d, n=%d, N=%d, i=%d, j=%d\n", m1, n1, N1, i1, j1);
+    printf("Output: %d\n", findPaths(m1, n1, N1, i1, j1));
+
+    printf("Test Case 2: m=%d, n=%d, N=%d, i=%d, j=%d\n", m2, n2, N2, i2, j2);
+    printf("Output: %d\n", findPaths(m2, n2, N2, i2, j2));
+
+    return 0;
+}

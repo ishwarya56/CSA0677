@@ -1,0 +1,64 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to swap two elements
+void swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Partition function for quicksort
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
+
+    for (int j = low; j <= high - 1; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(&arr[i], &arr[j]);
+        }
+    }
+    swap(&arr[i + 1], &arr[high]);
+    return i + 1;
+}
+
+// Quicksort function
+void quicksort(int arr[], int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+        quicksort(arr, low, pi - 1);
+        quicksort(arr, pi + 1, high);
+    }
+}
+
+// Function to find the maximum element in a sorted array
+int findMax(int* arr, int size) {
+    if (size == 0) {
+        printf("The list is empty.\n");
+        return -1;  // Indicating the list is empty
+    }
+    return arr[size - 1];
+}
+
+int main() {
+    // Test Case 1: Empty List
+    int nums1[] = {};
+    int size1 = sizeof(nums1) / sizeof(nums1[0]);
+    printf("Test Case 1 Output: ");
+    findMax(nums1, size1);
+
+    // Test Case 2: Single Element List
+    int nums2[] = {5};
+    int size2 = sizeof(nums2) / sizeof(nums2[0]);
+    quicksort(nums2, 0, size2 - 1);
+    printf("Test Case 2 Output: %d\n", findMax(nums2, size2));
+
+    // Test Case 3: All Elements are the Same
+    int nums3[] = {3, 3, 3, 3, 3};
+    int size3 = sizeof(nums3) / sizeof(nums3[0]);
+    quicksort(nums3, 0, size3 - 1);
+    printf("Test Case 3 Output: %d\n", findMax(nums3, size3));
+
+    return 0;
+}

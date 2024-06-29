@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Function to find and return the intervals of large groups in the string
+int** largeGroupPositions(char s, int returnSize, int** returnColumnSizes) {
+    int n = strlen(s);
+    int *result = (int)malloc(sizeof(int) * n);
+    returnColumnSizes = (int)malloc(sizeof(int) * n);
+    *returnSize = 0;
+
+    int start = 0;
+    for (int i = 0; i < n; ) {
+        int j = i;
+        while (j < n && s[j] == s[i]) {
+            j++;
+        }
+        
+        if (j - i >= 3) {
+            result[returnSize] = (int)malloc(sizeof(int) * 2);
+            result[*returnSize][0] = i;
+            result[*returnSize][1] = j - 1;
+            (*returnColumnSizes)[*returnSize] = 2;
+            (*returnSize)++;
+        }
+        
+        i = j;
+    }
+
+    return result;
+}
+
+// Function to print the intervals
+void printIntervals(int** intervals, int size, int* columnSizes) {
+    printf("[");
+    for (int i = 0; i < size; ++i) {
+        printf("[%d,%d]", intervals[i][0], intervals[i][1]);
+        if (i < size - 1) {
+            printf(", ");
+        }
+    }
+    printf("]\n");
+}
+
+int main() {
+    char s1[] = "abbxxxxzzy";
+    char s2[] = "abc";
+
+    int returnSize;
+    int *returnColumnSizes;
+
+    int **intervals1 = largeGroupPositions(s1, &returnSize, &returnColumnSizes);
+    printf("Input: \"%s\"\n", s1);
+    printf("Output: ");
+    printIntervals(intervals1, returnSize, returnColumnSizes);
+    printf("\n");
+
+    int **intervals2 = largeGroupPositions(s2, &returnSize, &returnColumnSizes);
+    printf("Input: \"%s\"\n", s2);
+    printf("Output: ");
+    printIntervals(intervals2, returnSize, returnColumnSizes);
+    printf("\n");
+
+    // Clean up allocated memory
+    for (int i = 0; i < returnSize; ++i) {
+        free(intervals1[i]);
+        free(intervals2[i]);
+    }
+    free(intervals1);
+    free(intervals2);
+    free(returnColumnSizes);
+
+    return 0;
+}

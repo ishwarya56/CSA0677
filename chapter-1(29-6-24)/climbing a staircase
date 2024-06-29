@@ -1,0 +1,29 @@
+#include <stdio.h>
+
+int climbStairs(int n) {
+    if (n <= 1)
+        return 1;
+    
+    int ways[n + 1];
+    ways[0] = 1;
+    ways[1] = 1;
+
+    for (int i = 2; i <= n; ++i) {
+        ways[i] = ways[i - 1] + ways[i - 2];
+    }
+
+    return ways[n];
+}
+
+int main() {
+    int n1 = 4;
+    int n2 = 3;
+
+    printf("Input: n = %d\n", n1);
+    printf("Output: %d\n", climbStairs(n1));
+
+    printf("Input: n = %d\n", n2);
+    printf("Output: %d\n", climbStairs(n2));
+
+    return 0;
+}

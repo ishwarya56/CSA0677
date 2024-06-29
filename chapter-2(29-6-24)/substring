@@ -1,0 +1,71 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+
+bool isSubstring(char *word1, char *word2) {
+    return strstr(word2, word1) != NULL;
+}
+
+char **stringMatching(char **words, int wordsSize, int *returnSize) {
+    char **result = (char **)malloc(wordsSize * sizeof(char *));
+    int resultSize = 0;
+
+    for (int i = 0; i < wordsSize; i++) {
+        bool isSub = false;
+        for (int j = 0; j < wordsSize; j++) {
+            if (i != j && isSubstring(words[i], words[j])) {
+                isSub = true;
+                break;
+            }
+        }
+        if (isSub) {
+            result[resultSize++] = words[i];
+        }
+    }
+
+    *returnSize = resultSize;
+    return result;
+}
+
+void printStringArray(char **arr, int size) {
+    printf("[");
+    for (int i = 0; i < size; i++) {
+        printf("\"%s\"", arr[i]);
+        if (i < size - 1) {
+            printf(", ");
+        }
+    }
+    printf("]\n");
+}
+
+int main() {
+    char *words1[] = {"mass", "as", "hero", "superhero"};
+    int size1 = sizeof(words1) / sizeof(words1[0]);
+
+    int returnSize1;
+    char **result1 = stringMatching(words1, size1, &returnSize1);
+    printf("Example 1:\n");
+    printStringArray(result1, returnSize1);
+    free(result1);
+
+    char *words2[] = {"leetcode", "et", "code"};
+    int size2 = sizeof(words2) / sizeof(words2[0]);
+
+    int returnSize2;
+    char **result2 = stringMatching(words2, size2, &returnSize2);
+    printf("Example 2:\n");
+    printStringArray(result2, returnSize2);
+    free(result2);
+
+    char *words3[] = {"blue", "green", "bu"};
+    int size3 = sizeof(words3) / sizeof(words3[0]);
+
+    int returnSize3;
+    char **result3 = stringMatching(words3, size3, &returnSize3);
+    printf("Example 3:\n");
+    printStringArray(result3, returnSize3);
+    free(result3);
+
+    return 0;
+}

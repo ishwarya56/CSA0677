@@ -1,0 +1,44 @@
+#include <stdio.h>
+
+double champagneTower(int poured, int query_row, int query_glass) {
+    // We will use a 2D array to represent the glasses and their contents
+    double glasses[101][101] = {0.0}; // We use 101 to handle up to 100 rows, index is 0-based
+    
+    glasses[0][0] = (double)poured; // Pour champagne into the top glass
+    
+    // Traverse each row up to the query_row
+    for (int i = 0; i <= query_row; ++i) {
+        for (int j = 0; j <= i; ++j) {
+            // Calculate excess champagne that flows to the next row
+            double excess = (glasses[i][j] - 1.0) / 2.0;
+            
+            if (excess > 0) {
+                // Distribute excess champagne to the glasses in the next row
+                glasses[i+1][j] += excess;
+                glasses[i+1][j+1] += excess;
+            }
+        }
+    }
+    
+    // The amount of champagne in the queried glass
+    double result = glasses[query_row][query_glass];
+    
+    // Ensure result is within the valid range [0, 1]
+    if (result > 1.0) result = 1.0;
+    
+    return result;
+}
+
+int main() {
+    // Test cases
+    int poured1 = 1, query_row1 = 1, query_glass1 = 1;
+    int poured2 = 2, query_row2 = 1, query_glass2 = 1;
+    
+    double result1 = champagneTower(poured1, query_row1, query_glass1);
+    double result2 = champagneTower(poured2, query_row2, query_glass2);
+    
+    printf("Output for (1, 1, 1): %.5f\n", result1); // Expected output: 0.00000
+    printf("Output for (2, 1, 1): %.5f\n", result2); // Expected output: 0.50000
+    
+    return 0;
+}

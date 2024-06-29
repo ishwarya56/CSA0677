@@ -1,0 +1,53 @@
+#include <stdio.h>
+
+// Function to check if an element exists in an array
+int existsInArray(int num, int* arr, int size) {
+    for (int i = 0; i < size; i++) {
+        if (arr[i] == num) {
+            return 1; // Element exists
+        }
+    }
+    return 0; // Element does not exist
+}
+
+// Function to calculate answer1 and answer2
+void calculateAnswers(int* nums1, int size1, int* nums2, int size2, int* answer1, int* answer2) {
+    *answer1 = 0;
+    *answer2 = 0;
+
+    // Calculate answer1
+    for (int i = 0; i < size1; i++) {
+        if (existsInArray(nums1[i], nums2, size2)) {
+            (*answer1)++;
+        }
+    }
+
+    // Calculate answer2
+    for (int i = 0; i < size2; i++) {
+        if (existsInArray(nums2[i], nums1, size1)) {
+            (*answer2)++;
+        }
+    }
+}
+
+int main() {
+    // Example 1
+    int nums1_1[] = {2, 3, 2};
+    int size1_1 = sizeof(nums1_1) / sizeof(nums1_1[0]);
+    int nums2_1[] = {1, 2};
+    int size2_1 = sizeof(nums2_1) / sizeof(nums2_1[0]);
+    int answer1_1, answer2_1;
+    calculateAnswers(nums1_1, size1_1, nums2_1, size2_1, &answer1_1, &answer2_1);
+    printf("Example 1: [%d, %d]\n", answer1_1, answer2_1);
+
+    // Example 2
+    int nums1_2[] = {4, 3, 2, 3, 1};
+    int size1_2 = sizeof(nums1_2) / sizeof(nums1_2[0]);
+    int nums2_2[] = {2, 2, 5, 2, 3, 6};
+    int size2_2 = sizeof(nums2_2) / sizeof(nums2_2[0]);
+    int answer1_2, answer2_2;
+    calculateAnswers(nums1_2, size1_2, nums2_2, size2_2, &answer1_2, &answer2_2);
+    printf("Example 2: [%d, %d]\n", answer1_2, answer2_2);
+
+    return 0;
+}

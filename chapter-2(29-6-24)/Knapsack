@@ -1,0 +1,86 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+// Function to calculate total value of selected items
+int total_value(int items[], int values[], int num_items) {
+    int total = 0;
+    for (int i = 0; i < num_items; i++) {
+        total += values[items[i]];
+    }
+    return total;
+}
+
+// Function to check feasibility (total weight <= capacity)
+bool is_feasible(int items[], int weights[], int num_items, int capacity) {
+    int total_weight = 0;
+    for (int i = 0; i < num_items; i++) {
+        total_weight += weights[items[i]];
+    }
+    return (total_weight <= capacity);
+}
+
+// Function to solve 0-1 Knapsack problem using brute-force approach
+void knapsack_problem(int weights[], int values[], int num_items, int capacity) {
+    // Initialize variables to track optimal solution
+    int max_value = 0;
+    int optimal_selection[num_items];
+    int num_optimal_items = 0;
+    
+    // Generate all subsets (power set)
+    int subset_count = 1 << num_items; // 2^n possible subsets
+    for (int subset = 0; subset < subset_count; subset++) {
+        // Create a subset based on current subset bitmask
+        int current_selection[num_items];
+        int current_size = 0;
+        
+        for (int i = 0; i < num_items; i++) {
+            if (subset & (1 << i)) {
+                current_selection[current_size++] = i;
+            }
+        }
+        
+        // Check if the subset is feasible and calculate its total value
+        if (is_feasible(current_selection, weights, current_size, capacity)) {
+            int current_value = total_value(current_selection, values, current_size);
+            // Update optimal solution if current subset has higher value
+            if (current_value > max_value) {
+                max_value = current_value;
+                num_optimal_items = current_size;
+                for (int i = 0; i < current_size; i++) {
+                    optimal_selection[i] = current_selection[i];
+                }
+            }
+        }
+    }
+    
+    // Print optimal selection and total value
+    printf("Optimal Selection: [");
+    for (int i = 0; i < num_optimal_items; i++) {
+        printf("%d", optimal_selection[i]);
+        if (i < num_optimal_items - 1) {
+            printf(", ");
+        }
+    }
+    printf("] (Items with indices)\n");
+    printf("Total Value: %d\n", max_value);
+}
+
+int main() {
+    // Test Case 1: Simple Case
+    int weights1[] = {2, 3, 1};
+    int values1[] = {4, 5, 3};
+    int capacity1 = 4;
+    int num_items1 = 3;
+    
+    knapsack_problem(weights1, values1, num_items1, capacity1);
+    
+    // Test Case 2: More Complex Case
+    int weights2[] = {1, 2, 3, 4};
+    int values2[] = {2, 4, 6, 3};
+    int capacity2 = 6;
+    int num_items2 = 4;
+    
+    knapsack_problem(weights2, values2, num_items2, capacity2);
+    
+    return 0;
+}

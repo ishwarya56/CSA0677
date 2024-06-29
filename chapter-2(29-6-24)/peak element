@@ -1,0 +1,84 @@
+#include <stdio.h>
+
+// Function to swap two elements in an array
+void swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Function to partition the array using the middle element as pivot
+int partition(int arr[], int low, int high) {
+    int pivot = arr[(low + high) / 2]; // Choosing the middle element as pivot
+    int i = low, j = high;
+
+    while (i <= j) {
+        // Move left while current element is less than pivot
+        while (arr[i] < pivot)
+            i++;
+        // Move right while current element is greater than pivot
+        while (arr[j] > pivot)
+            j--;
+        // Swap elements if i <= j
+        if (i <= j) {
+            swap(&arr[i], &arr[j]);
+            i++;
+            j--;
+        }
+    }
+    // Return the pivot index
+    return i;
+}
+
+// Function to perform Quick Sort
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        // Partition the array into two halves
+        int pi = partition(arr, low, high);
+
+        // Recursively sort the two halves
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi, high);
+
+        // Print array after partition step
+        printf("Partition at index %d: ", pi);
+        for (int k = low; k <= high; k++)
+            printf("%d ", arr[k]);
+        printf("\n");
+    }
+}
+
+// Function to print an array
+void printArray(int arr[], int size) {
+    for (int i = 0; i < size; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+}
+
+int main() {
+    // Test case 1
+    int a1[] = {19, 72, 35, 46, 58, 91, 22, 31};
+    int N1 = sizeof(a1) / sizeof(a1[0]);
+    printf("Input: N=%d, a[] = {19,72,35,46,58,91,22,31}\n");
+    quickSort(a1, 0, N1 - 1);
+    printf("Output: ");
+    printArray(a1, N1);
+
+    // Test case 2
+    int a2[] = {31, 23, 35, 27, 11, 21, 15, 28};
+    int N2 = sizeof(a2) / sizeof(a2[0]);
+    printf("Input: N=%d, a[] = {31,23,35,27,11,21,15,28}\n");
+    quickSort(a2, 0, N2 - 1);
+    printf("Output: ");
+    printArray(a2, N2);
+
+    // Test case 3
+    int a3[] = {22, 34, 25, 36, 43, 67, 52, 13, 65, 17};
+    int N3 = sizeof(a3) / sizeof(a3[0]);
+    printf("Input: N=%d, a[] = {22,34,25,36,43,67,52,13,65,17}\n");
+    quickSort(a3, 0, N3 - 1);
+    printf("Output: ");
+    printArray(a3, N3);
+
+    return 0;
+}

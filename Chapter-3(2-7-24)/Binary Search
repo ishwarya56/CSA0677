@@ -1,0 +1,68 @@
+#include <stdio.h>
+
+// Function to perform Binary Search
+int binarySearch(int arr[], int size, int key, int *comparisons) {
+    int low = 0, high = size - 1;
+    *comparisons = 0;
+
+    while (low <= high) {
+        (*comparisons)++;
+        int mid = low + (high - low) / 2;
+
+        if (arr[mid] == key) {
+            return mid; // Return the index of the key
+        } else if (arr[mid] < key) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+
+    return -1; // Key not found
+}
+
+int main() {
+    int arr1[] = {5, 10, 15, 20, 25, 30, 35, 40, 45};
+    int n1 = sizeof(arr1) / sizeof(arr1[0]);
+    int key1 = 20;
+    int comparisons1;
+
+    int result1 = binarySearch(arr1, n1, key1, &comparisons1);
+
+    if (result1 != -1) {
+        printf("Element %d found at index %d\n", key1, result1);
+    } else {
+        printf("Element %d not found\n", key1);
+    }
+    printf("Number of comparisons: %d\n", comparisons1);
+
+    int arr2[] = {10, 20, 30, 40, 50, 60};
+    int n2 = sizeof(arr2) / sizeof(arr2[0]);
+    int key2 = 50;
+    int comparisons2;
+
+    int result2 = binarySearch(arr2, n2, key2, &comparisons2);
+
+    if (result2 != -1) {
+        printf("Element %d found at index %d\n", key2, result2);
+    } else {
+        printf("Element %d not found\n", key2);
+    }
+    printf("Number of comparisons: %d\n", comparisons2);
+
+    int arr3[] = {21, 32, 40, 54, 65, 76, 87};
+    int n3 = sizeof(arr3) / sizeof(arr3[0]);
+    int key3 = 32;
+    int comparisons3;
+
+    int result3 = binarySearch(arr3, n3, key3, &comparisons3);
+
+    if (result3 != -1) {
+        printf("Element %d found at index %d\n", key3, result3);
+    } else {
+        printf("Element %d not found\n", key3);
+    }
+    printf("Number of comparisons: %d\n", comparisons3);
+
+    return 0;
+}

@@ -1,0 +1,59 @@
+#include <stdio.h>
+
+// Function to swap two elements
+void swap(int *a, int *b) {
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+// Function to perform the partition operation using the middle element as the pivot
+int partition(int arr[], int low, int high) {
+    int mid = low + (high - low) / 2;
+    int pivot = arr[mid];
+    swap(&arr[mid], &arr[low]);  // Move pivot to the start for convenience
+
+    int i = low + 1;
+    for (int j = low + 1; j <= high; j++) {
+        if (arr[j] < pivot) {
+            swap(&arr[i], &arr[j]);
+            i++;
+        }
+    }
+    swap(&arr[low], &arr[i - 1]);  // Move pivot to its correct place
+    return i - 1;
+}
+
+// Function to perform Quick Sort
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+
+        printf("Array after partitioning: ");
+        for (int i = 0; i < 8; i++)
+            printf("%d ", arr[i]);
+        printf("\n");
+
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+int main() {
+    int arr1[] = {19, 72, 35, 46, 58, 91, 22, 31};
+    int n1 = sizeof(arr1) / sizeof(arr1[0]);
+
+    printf("Original array: ");
+    for (int i = 0; i < n1; i++)
+        printf("%d ", arr1[i]);
+    printf("\n");
+
+    quickSort(arr1, 0, n1 - 1);
+
+    printf("Sorted array: ");
+    for (int i = 0; i < n1; i++)
+        printf("%d ", arr1[i]);
+    printf("\n");
+
+    return 0;
+}

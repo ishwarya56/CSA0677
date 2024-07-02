@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <limits.h>
+#include <stdint.h>
+
+// Function to determine if there exists a subset that sums exactly to the target sum E using Meet in the Middle technique
+bool subsetSumExact(int set[], int n, int exactSum) {
+    // Divide the set into two halves
+    int mid = n / 2;
+
+    // Generate subset sums for the first half
+    int subset1Size = mid;
+    int subset2Size = n - mid;
+    int subset1Sums[1 << subset1Size];
+
+    // Generate all subset sums for the first half
+    for (int i = 0; i < (1 << subset1Size); i++) {
+        int sum = 0;
+        for (int j = 0; j < subset1Size; j++) {
+            if (i & (1 << j)) {
+                sum += set[j];
+            }
+        }
+        subset1Sums[i] = sum;
+    }
+
+    // Check for exact sum in the second half using the complement approach
+    for (int i = 0; i < (1 << subset2Size); i++) {
+        int sum = 0;
+        for (int j = 0; j < subset2Size; j++) {
+            if (i & (1 << j)) {
+                sum += set[mid + j];
+            }
+        }
+        int complement = exactSum - sum;
+
+        // Check if complement exists in subset1Sums
+        for (int k = 0; k < (1 << subset1Size); k++) {
+            if (subset1Sums[k] == complement) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+int main() {
+    // Test case 1
+    int set1[] = {1, 3, 9, 2, 7, 12};
+    int n1 = sizeof(set1) / sizeof(set1[0]);
+    int exactSum1 = 15;
+    bool result1 = subsetSumExact(set1, n1, exactSum1);
+    printf("Test Case 1:\n");
+    printf("Subset with exact sum %d exists: %s\n\n", exactSum1, result1 ? "true" : "false");
+
+    // Test case 2
+    int set2[] = {3, 34, 4, 12, 5, 2};
+    int n2 = sizeof(set2) / sizeof(set2[0]);
+    int exactSum2 = 15;
+    bool result2 = subsetSumExact(set2, n2, exactSum2);
+    printf("Test Case 2:\n");
+    printf("Subset with exact sum %d exists: %s\n\n", exactSum2, result2 ? "true" : "false");
+
+    return 0;
+}

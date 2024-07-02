@@ -1,0 +1,97 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+// Function to find minimum absolute difference
+int minAbsDiff(int a, int b) {
+    return (abs(a) < abs(b)) ? a : b;
+}
+
+// Function to find the closest subset sum to the target sum using Meet in the Middle technique
+int closestSubsetSum(int set[], int n, int targetSum) {
+    int closestSum = INT_MAX;
+    
+    // Divide the set into two halves
+    int mid = n / 2;
+
+    // Generate subset sums for the first half
+    int subset1Size = mid;
+    int subset2Size = n - mid;
+    int subset1Sums[1 << subset1Size];
+    int subset2Sums[1 << subset2Size];
+
+    // Generate all subset sums for the first half
+    for (int i = 0; i < (1 << subset1Size); i++) {
+        int sum = 0;
+        for (int j = 0; j < subset1Size; j++) {
+            if (i & (1 << j)) {
+                sum += set[j];
+            }
+        }
+        subset1Sums[i] = sum;
+    }
+
+    // Generate all subset sums for the second half
+    for (int i = 0; i < (1 << subset2Size); i++) {
+        int sum = 0;
+        for (int j = 0; j < subset2Size; j++) {
+            if (i & (1 << j)) {
+                sum += set[mid + j];
+            }
+        }
+        subset2Sums[i] = sum;
+    }
+
+    // Sort the subset sums of subset2 for binary search
+    qsort(subset2Sums, 1 << subset2Size, sizeof(int), cmpfunc);
+
+    // Find the closest sum to the target sum
+    for (int i = 0; i < (1 << subset1Size); i++) {
+        int remaining = targetSum - subset1Sums[i];
+
+        // Binary search for closest sum in subset2Sums
+        int low = 0, high = (1 << subset2Size) - 1;
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            int currentDiff = subset2Sums[mid] - remaining;
+
+            // Update closestSum if closer to remaining
+            closestSum = minAbsDiff(closestSum, currentDiff);
+
+            if (currentDiff == 0) {
+                return targetSum; // Found exact match
+            } else if (currentDiff < 0) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+    }
+
+    return targetSum + closestSum; // Return the closest sum found
+}
+
+// Comparator function for qsort
+int cmpfunc(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
+int main() {
+    // Test case 1
+    int set1[] = {45, 34, 4, 12, 5, 2};
+    int n1 = sizeof(set1) / sizeof(set1[0]);
+    int targetSum1 = 42;
+    int result1 = closestSubsetSum(set1, n1, targetSum1);
+    printf("Test Case 1:\n");
+    printf("Closest subset sum to %d: %d\n\n", targetSum1, result1);
+
+    // Test case 2
+    int set2[] = {1, 3, 2, 7, 4, 6};
+    int n2 = sizeof(set2) / sizeof(set2[0]);
+    int targetSum2 = 10;
+    int result2 = closestSubsetSum(set2, n2, targetSum2);
+    printf("Test Case 2:\n");
+    printf("Closest subset sum to %d: %d\n\n", targetSum2, result2);
+
+    return 0;
+}

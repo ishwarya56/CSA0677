@@ -1,0 +1,86 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to compare two integers (used for qsort)
+int compare(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
+// Function to count zero sum tuples
+int fourSumCount(int *A, int ASize, int *B, int BSize, int *C, int CSize, int *D, int DSize) {
+    int count = 0;
+
+    // Sort arrays A and B
+    qsort(A, ASize, sizeof(int), compare);
+    qsort(B, BSize, sizeof(int), compare);
+
+    // Sort arrays C and D
+    qsort(C, CSize, sizeof(int), compare);
+    qsort(D, DSize, sizeof(int), compare);
+
+    // Use two-pointer technique to count tuples
+    for (int i = 0; i < ASize; i++) {
+        for (int j = 0; j < BSize; j++) {
+            int target = -(A[i] + B[j]);
+            int left = 0, right = DSize - 1;
+            
+            while (left < CSize && right >= 0) {
+                int sum = C[left] + D[right];
+                if (sum < target) {
+                    left++;
+                } else if (sum > target) {
+                    right--;
+                } else {
+                    // Found a match
+                    int countC = 1, countD = 1;
+                    left++;
+                    right--;
+                    
+                    // Count occurrences of same value in C and D
+                    while (left < CSize && C[left] == C[left - 1]) {
+                        countC++;
+                        left++;
+                    }
+                    while (right >= 0 && D[right] == D[right + 1]) {
+                        countD++;
+                        right--;
+                    }
+                    
+                    count += countC * countD;
+                }
+            }
+        }
+    }
+
+    return count;
+}
+
+int main() {
+    // Test case 1
+    int A1[] = {1, 2};
+    int B1[] = {-2, -1};
+    int C1[] = {-1, 2};
+    int D1[] = {0, 2};
+    int ASize1 = sizeof(A1) / sizeof(A1[0]);
+    int BSize1 = sizeof(B1) / sizeof(B1[0]);
+    int CSize1 = sizeof(C1) / sizeof(C1[0]);
+    int DSize1 = sizeof(D1) / sizeof(D1[0]);
+    printf("Test Case 1:\n");
+    int result1 = fourSumCount(A1, ASize1, B1, BSize1, C1, CSize1, D1, DSize1);
+    printf("Number of tuples where A[i] + B[j] + C[k] + D[l] = 0: %d\n\n", result1);
+
+    // Test case 2
+    int A2[] = {0};
+    int B2[] = {0};
+    int C2[] = {0};
+    int D2[] = {0};
+    int ASize2 = sizeof(A2) / sizeof(A2[0]);
+    int BSize2 = sizeof(B2) / sizeof(B2[0]);
+    int CSize2 = sizeof(C2) / sizeof(C2[0]);
+    int DSize2 = sizeof(D2) / sizeof(D2[0]);
+    printf("Test Case 2:\n");
+    int result2 = fourSumCount(A2, ASize2, B2, BSize2, C2, CSize2, D2, DSize2);
+    printf("Number of tuples where A[i] + B[j] + C[k] + D[l] = 0: %d\n\n", result2);
+
+    return 0;
+}

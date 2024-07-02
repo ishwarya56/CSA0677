@@ -1,0 +1,102 @@
+#include <stdio.h>
+
+// Function to swap two elements in an array
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Function to find median of an array using insertion sort
+int findMedian(int arr[], int left, int right) {
+    int n = right - left + 1;
+    int i, j;
+    for (i = left + 1; i <= right; i++) {
+        int key = arr[i];
+        j = i - 1;
+        while (j >= left && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+    return arr[left + n / 2];
+}
+
+// Function to partition the array around a pivot
+int partition(int arr[], int left, int right, int pivot) {
+    int i;
+    for (i = left; i < right; i++) {
+        if (arr[i] == pivot)
+            break;
+    }
+    swap(&arr[i], &arr[right]);
+
+    i = left;
+    for (int j = left; j <= right - 1; j++) {
+        if (arr[j] <= pivot) {
+            swap(&arr[i], &arr[j]);
+            i++;
+        }
+    }
+    swap(&arr[i], &arr[right]);
+    return i;
+}
+
+// Function to find kth smallest element using Median of Medians algorithm
+int kthSmallest(int arr[], int left, int right, int k) {
+    if (k > 0 && k <= right - left + 1) {
+        int n = right - left + 1;
+        int i, median[(n + 4) / 5];
+        for (i = 0; i < n / 5; i++)
+            median[i] = findMedian(arr, left + i * 5, left + i * 5 + 4);
+        if (i * 5 < n) {
+            median[i] = findMedian(arr, left + i * 5, left + i * 5 + n % 5);
+            i++;
+        }
+        int medianOfMedians = (i == 1) ? median[i - 1] : kthSmallest(median, 0, i - 1, i / 2);
+        int pos = partition(arr, left, right, medianOfMedians);
+        if (pos - left == k - 1)
+            return arr[pos];
+        if (pos - left > k - 1)
+            return kthSmallest(arr, left, pos - 1, k);
+        return kthSmallest(arr, pos + 1, right, k - pos + left - 1);
+    }
+    return -1; // If k is out of range
+}
+
+// Function to find the k-th smallest element in the array
+int median_of_medians(int arr[], int n, int k) {
+    // Check if k is within the valid range
+    if (k <= 0 || k > n)
+        return -1; // Invalid input
+
+    // Find the k-th smallest element using Median of Medians algorithm
+    return kthSmallest(arr, 0, n - 1, k);
+}
+
+int main() {
+    // Test case 1
+    int arr1[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int k1 = 6;
+    int n1 = sizeof(arr1) / sizeof(arr1[0]);
+    printf("Test Case 1:\n");
+    int result1 = median_of_medians(arr1, n1, k1);
+    if (result1 != -1)
+        printf("k-th smallest element: %d\n\n", result1);
+    else
+        printf("Invalid input for k\n\n");
+
+    // Test case 2
+    int arr2[] = {23, 17, 31, 44, 55, 21, 20, 18, 19, 27};
+    int k2 = 5;
+    int n2 = sizeof(arr2) / sizeof(arr2[0]);
+    printf("Test Case 2:\n");
+    int result2 = median_of_medians(arr2, n2, k2);
+    if (result2 != -1)
+        printf("k-th smallest element: %d\n\n", result2);
+    else
+        printf("Invalid input for k\n\n");
+
+    return 0;
+}
